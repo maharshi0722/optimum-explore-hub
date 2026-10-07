@@ -20,17 +20,17 @@
 }
 
 :root {
-  --background: oklch(0.982 0.006 245);
-  --foreground: oklch(0.19 0.025 252);
-  --card: oklch(1 0 0 / 0.56);
-  --muted: oklch(0.955 0.012 245);
-  --muted-foreground: oklch(0.49 0.035 251);
-  --border: oklch(0.82 0.03 245 / 0.65);
-  --primary: oklch(0.62 0.2 250);
+  --background: oklch(0.925 0.017 250);
+  --foreground: oklch(0.2 0.028 252);
+  --card: oklch(0.965 0.012 250 / 0.64);
+  --muted: oklch(0.89 0.022 248);
+  --muted-foreground: oklch(0.43 0.038 251);
+  --border: oklch(0.68 0.045 246 / 0.52);
+  --primary: oklch(0.56 0.19 250);
   --primary-foreground: oklch(1 0 0);
   --accent: oklch(0.74 0.17 231);
-  --glass: oklch(1 0 0 / 0.42);
-  --glass-strong: oklch(1 0 0 / 0.68);
+  --glass: oklch(0.95 0.014 250 / 0.62);
+  --glass-strong: oklch(0.98 0.008 250 / 0.72);
   --line: oklch(0.62 0.16 244 / 0.14);
   --shadow-soft: 0 24px 80px oklch(0.43 0.1 248 / 0.13);
   --shadow-card: 0 15px 40px oklch(0.45 0.1 248 / 0.11), inset 0 4px 4px oklch(1 0 0 / 0.7);
@@ -53,7 +53,7 @@
 }
 
 .hub-shell { position: relative; min-height: 100svh; overflow: hidden; padding: 24px; isolation: isolate; }
-.ambient-glow { position: fixed; z-index: -2; inset: 0; background: radial-gradient(ellipse 46% 48% at 5% 2%, oklch(0.77 0.14 240 / 0.36), transparent 68%), radial-gradient(ellipse 32% 35% at 28% 12%, oklch(0.68 0.19 249 / 0.2), transparent 72%), var(--background); }
+.ambient-glow { position: fixed; z-index: -2; inset: 0; background: radial-gradient(ellipse 46% 48% at 5% 2%, oklch(0.72 0.12 240 / 0.28), transparent 68%), radial-gradient(ellipse 32% 35% at 28% 12%, oklch(0.63 0.17 249 / 0.14), transparent 72%), linear-gradient(135deg, oklch(0.94 0.018 248), var(--background)); }
 .network-mesh { position: fixed; z-index: -1; inset: 0; opacity: .55; pointer-events: none; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 72px 72px; mask-image: linear-gradient(to right, transparent, black 24%, black 85%, transparent); }
 .network-mesh::before { content: ""; position: absolute; width: 42vw; aspect-ratio: 1; right: -8vw; top: -15vw; border-radius: 50%; border: 1px solid var(--line); box-shadow: 0 0 90px oklch(0.66 0.17 246 / .18), inset 0 0 80px oklch(0.7 0.16 236 / .12); animation: breathe 8s ease-in-out infinite; }
 .mesh-node { position: absolute; width: 6px; height: 6px; border-radius: 99px; background: var(--primary); box-shadow: 0 0 0 7px oklch(0.62 0.2 250 / .08), 0 0 24px var(--primary); animation: pulse 3s ease-in-out infinite; }
@@ -61,9 +61,12 @@
 
 .hub-frame { position: relative; z-index: 1; display: grid; grid-template-columns: 290px minmax(0, 1fr); min-height: calc(100svh - 48px); max-width: 1600px; margin: 0 auto; overflow: hidden; border: 1px solid oklch(0.62 0.08 245 / .19); border-radius: 24px; background: var(--glass); box-shadow: var(--shadow-soft), inset 0 4px 4px oklch(1 0 0 / .65); backdrop-filter: blur(50px) saturate(130%); }
 .module-rail { display: flex; min-width: 0; flex-direction: column; padding: 35px 26px 28px; border-right: 1px solid var(--border); background: oklch(1 0 0 / .24); }
-.optimum-mark { display: flex; align-items: center; gap: 9px; color: var(--foreground); font-family: var(--font-display); font-size: 18px; font-weight: 800; letter-spacing: 0; text-decoration: none; }
+.optimum-mark { display: flex; align-items: center; gap: 11px; color: var(--foreground); font-family: var(--font-display); text-decoration: none; }
+.optimum-wordmark { display: flex; align-items: baseline; gap: 8px; }
+.optimum-wordmark strong { font-size: 18px; font-weight: 800; }
 .optimum-mark em { color: var(--primary); font-size: 13px; font-style: normal; letter-spacing: .12em; }
-.optimum-symbol { display: grid; width: 42px; height: 32px; place-items: center; border-radius: 9px; background: var(--primary); color: var(--primary-foreground); font-size: 28px; line-height: 1; box-shadow: inset 0 4px 4px oklch(1 0 0 / .32), 0 8px 20px oklch(0.62 0.2 250 / .2); }
+.optimum-symbol { display: grid; width: 52px; height: 40px; place-items: center; overflow: hidden; border-radius: 10px; background: oklch(0.19 0.025 252); box-shadow: inset 0 3px 3px oklch(1 0 0 / .12), 0 8px 20px oklch(0.32 0.08 250 / .2); }
+.optimum-symbol img { width: 100%; height: 100%; object-fit: cover; }
 .module-nav { display: grid; gap: 4px; margin-top: clamp(52px, 10vh, 104px); }
 .module-button { position: relative; display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 0 10px; width: 100%; min-height: 64px; padding: 12px 10px 12px 14px; border: 0; border-radius: 10px; background: transparent; color: var(--muted-foreground); text-align: left; cursor: pointer; transition: background .25s ease, color .25s ease, transform .25s ease; }
 .module-button::before { content: ""; position: absolute; left: 0; top: 17px; width: 2px; height: 28px; border-radius: 2px; background: transparent; transition: background .25s ease, box-shadow .25s ease; }
@@ -101,8 +104,11 @@
 .card-text { margin-top: auto; padding-top: 24px; }
 .card-text h2 { margin: 0; font-family: var(--font-display); font-size: 16px; font-weight: 700; line-height: 1.18; }
 .card-text p { margin: 7px 0 0; color: var(--muted-foreground); font-size: 11px; line-height: 1.45; }
-.card-image { height: clamp(125px, 19vh, 190px); overflow: hidden; background: var(--muted); }
-.card-image img { width: 100%; height: 100%; object-fit: cover; object-position: top; filter: saturate(.7); transition: transform .55s ease, filter .4s ease; }
+.card-image { height: clamp(150px, 23vh, 220px); overflow: hidden; background: var(--muted); }
+.card-image img { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: saturate(.78); transition: transform .55s ease, filter .4s ease; }
+.module-grid-people .card-image { height: clamp(210px, 33vh, 330px); background: oklch(0.86 0.02 250); }
+.module-grid-people .card-image img { object-fit: contain; object-position: center bottom; filter: saturate(.82) contrast(1.02); }
+.module-grid-articles .card-image { height: clamp(155px, 24vh, 225px); }
 .glass-card:hover .card-image img { transform: scale(1.04); filter: saturate(1); }
 .module-grid-people .card-copy, .module-grid-articles .card-copy { min-height: 118px; }
 .module-grid-articles { grid-auto-flow: column; grid-auto-columns: minmax(220px, 27%); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; scrollbar-width: none; }
