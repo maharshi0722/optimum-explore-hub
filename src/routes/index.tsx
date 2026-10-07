@@ -19,6 +19,7 @@ import {
   Youtube,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 import aprAsset from "@/assets/article-apr.jpeg.asset.json";
 import blockchainAsset from "@/assets/article-blockchain.png.asset.json";
@@ -139,7 +140,7 @@ function OptimumHub() {
 
           <nav className="module-nav" aria-label="Optimum Space modules">
             {modules.map((module, index) => (
-              <button
+              <Button variant="ghost"
                 key={module.id}
                 type="button"
                 onClick={() => setActive(module.id)}
@@ -149,7 +150,7 @@ function OptimumHub() {
                 <span className="module-number">0{index + 1}</span>
                 <span className="module-name">{module.label}</span>
                 <span className="module-note">{module.note}</span>
-              </button>
+              </Button>
             ))}
           </nav>
 
@@ -163,8 +164,8 @@ function OptimumHub() {
           <div className="stage-topbar">
             <span>Optimum / Space</span>
             <div className="stage-actions">
-              <button type="button" onClick={() => move(-1)} aria-label="Previous module"><ArrowLeft size={17} /></button>
-              <button type="button" onClick={() => move(1)} aria-label="Next module"><ArrowRight size={17} /></button>
+              <Button variant="ghost" type="button" onClick={() => move(-1)} aria-label="Previous module" title="Previous module"><ArrowLeft size={17} /></Button>
+              <Button variant="ghost" type="button" onClick={() => move(1)} aria-label="Next module" title="Next module"><ArrowRight size={17} /></Button>
             </div>
           </div>
 
@@ -219,7 +220,7 @@ function CardGrid({ items, kind }: { items: GridItem[]; kind: "links" | "people"
             href={item.href}
             target="_blank"
             rel="noreferrer"
-            className="glass-card"
+            className="tech-card"
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.055, duration: 0.38 }}
