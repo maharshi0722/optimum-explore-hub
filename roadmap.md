@@ -6,3 +6,6 @@
 - [x] Show all three founder portraits fully and improve Good Read image presentation
 - [x] Confirm all site images use deployment-safe project assets
 - [x] Fix build errors and verify desktop/mobile interaction
+- [ ] Apply dark Cyberlayer-inspired styling without changing layout or content
+- [ ] Correct logo proportions and preserve full founder/article imagery
+- [ ] Verify all five modules, image loading and preview appearance
