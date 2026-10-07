@@ -67,7 +67,7 @@
 .optimum-wordmark { font-family: "Fustat", sans-serif; display: flex; align-items: baseline; gap: 8px; }
 .optimum-wordmark strong { font-size: 18px; font-weight: 800; }
 .optimum-mark em { color: var(--primary); font-size: 13px; font-style: normal; letter-spacing: 0; }
-.optimum-symbol { display: grid; width: 52px; height: 40px; flex-shrink: 0; place-items: center; overflow: hidden; border-radius: 8px; background: var(--logo-surface); }
+.optimum-symbol { display: grid; width: 44px; height: 44px; flex-shrink: 0; place-items: center; overflow: hidden; border-radius: 0; background: var(--logo-surface); }
 .optimum-symbol img { width: 100%; height: 100%; object-fit: contain; }
 .module-nav { display: grid; gap: 4px; margin-top: clamp(52px, 10vh, 104px); }
 .module-button { position: relative; display: grid; grid-template-columns: 28px minmax(0,1fr); justify-content: start; gap: 0 10px; width: 100%; height: auto; min-height: 64px; padding: 12px 10px 12px 14px; border: 0; border-radius: 0; background: transparent; color: var(--muted-foreground); text-align: left; cursor: pointer; transition: background .2s ease, color .2s ease; }
@@ -95,7 +95,7 @@
 .module-grid { display: grid; gap: 12px; }
 .module-grid-links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .module-grid-people { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.module-grid-articles { grid-template-columns: repeat(4, minmax(210px, 1fr)); }
+.module-grid-articles { grid-template-columns: none; }
 .module-grid-tools { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .tech-card { position: relative; min-width: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 0; background: var(--card); color: var(--foreground); text-decoration: none; transition: border-color .2s ease, background .2s ease; }
 .tech-card:hover { border-color: var(--primary); background: var(--surface-hover); }
@@ -122,9 +122,6 @@
 .module-number, .module-note, .stage-topbar, .stage-footer, .stage-heading > div > p, .rail-foot > span { font-family: var(--font-mono); }
 .module-button:focus-visible, .stage-actions button:focus-visible, .tech-card:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
 @media (min-width: 901px) and (max-width: 1200px) { .stage-heading h1 { font-size: 52px; } }
-
-@keyframes pulse { 0%, 100% { opacity: .45; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.3); } }
-@keyframes breathe { 0%,100% { transform: scale(.94); opacity: .55; } 50% { transform: scale(1.04); opacity: .9; } }
 
 @media (max-width: 900px) {
   .hub-shell { padding: 12px; overflow: visible; }
