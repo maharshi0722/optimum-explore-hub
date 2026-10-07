@@ -21,13 +21,13 @@ import {
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
-import aprAsset from "@/assets/article-apr.jpeg.asset.json";
+import aprImage from "@/assets/article-apr.png";
 import blockchainAsset from "@/assets/article-blockchain.png.asset.json";
 import flexnodesAsset from "@/assets/article-flexnodes.png.asset.json";
-import killerAppsAsset from "@/assets/article-killer-apps.jpeg.asset.json";
-import p2pAsset from "@/assets/article-p2p.jpeg.asset.json";
-import researchAsset from "@/assets/article-research.jpeg.asset.json";
-import scaleAsset from "@/assets/article-scale.jpeg.asset.json";
+import killerAppsImage from "@/assets/article-killer-apps.png";
+import p2pImage from "@/assets/article-p2p.png";
+import researchImage from "@/assets/article-research.png";
+import scaleImage from "@/assets/article-scale.png";
 import kentAsset from "@/assets/kent-lin.png.asset.json";
 import kishoriAsset from "@/assets/kishori-konwar.png.asset.json";
 import murielAsset from "@/assets/muriel-medard.png.asset.json";
@@ -73,13 +73,13 @@ const team = [
 ];
 
 const reads = [
-  { title: "Optimizing a $100B Market", detail: "Latency reduction and ETH staking revenue.", href: "https://x.com/get_optimum/status/2041916972678705375", image: aprAsset.url },
+  { title: "Optimizing a $100B Market", detail: "Latency reduction and ETH staking revenue.", href: "https://x.com/get_optimum/status/2041916972678705375", image: aprImage },
   { title: "Flexnodes", detail: "A global network of data accelerators.", href: "https://x.com/get_optimum/status/2013656494139678752", image: flexnodesAsset.url },
-  { title: "Introducing OptimumP2P", detail: "Implementation and benefits.", href: "https://x.com/get_optimum/status/1930698870507626516", image: p2pAsset.url },
-  { title: "Decentralize to scale", detail: "Infrastructure for an onchain digital economy.", href: "https://x.com/kentlinyy/status/1963652915312349534", image: scaleAsset.url },
-  { title: "Tomorrow's killer apps", detail: "Unlocking next-generation performance.", href: "https://x.com/kentlinyy/status/1935026597150736432", image: killerAppsAsset.url },
-  { title: "Research & insights", detail: "Signals from Optimum's research ecosystem.", href: "https://x.com/MurielMedard/status/2086878404847317010", image: researchAsset.url },
-  { title: "Rethinking the network layer", detail: "A new way to think about blockchain infrastructure.", href: "https://research.4pillars.io/en/research/optimum-rethinking-the-blockchain-network-layer", image: blockchainAsset.url },
+  { title: "Introducing OptimumP2P", detail: "Implementation and benefits.", href: "https://x.com/get_optimum/status/1930698870507626516", image: p2pImage },
+  { title: "Decentralize to scale", detail: "Infrastructure for an onchain digital economy.", href: "https://x.com/kentlinyy/status/1963652915312349534", image: scaleImage },
+  { title: "Tomorrow's killer apps", detail: "Unlocking next-generation performance.", href: "https://x.com/kentlinyy/status/1935026597150736432", image: killerAppsImage },
+  { title: "Research & insights", detail: "Signals from Optimum's research ecosystem.", href: "https://x.com/MurielMedard/status/2086878404847317010", image: researchImage },
+  { title: "Rethinking the network layer", detail: "A new way to think about blockchain infrastructure.", href: "https://research.4pillars.io/en/research/optimum-rethinking-the-blockchain-network-layer/", image: blockchainAsset.url },
 ];
 
 const playground = [
@@ -237,3 +237,4 @@ function CardGrid({ items, kind }: { items: GridItem[]; kind: "links" | "people"
     </div>
   );
 }
+
