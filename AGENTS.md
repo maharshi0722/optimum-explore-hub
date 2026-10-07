@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep module content and navigation in the existing hub route, with appearance controlled by semantic tokens in the shared stylesheet, so visual updates preserve the navigation flow.
+- Use the shared Button for hub navigation and arrow controls to keep focus and interaction behavior consistent.
