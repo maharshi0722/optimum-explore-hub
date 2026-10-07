@@ -20,17 +20,17 @@
 }
 
 :root {
-  --background: oklch(0.925 0.017 250);
+  --background: oklch(0.84 0.028 250);
   --foreground: oklch(0.2 0.028 252);
-  --card: oklch(0.965 0.012 250 / 0.64);
-  --muted: oklch(0.89 0.022 248);
+  --card: oklch(0.94 0.016 250 / 0.7);
+  --muted: oklch(0.84 0.028 248);
   --muted-foreground: oklch(0.43 0.038 251);
   --border: oklch(0.68 0.045 246 / 0.52);
   --primary: oklch(0.56 0.19 250);
   --primary-foreground: oklch(1 0 0);
   --accent: oklch(0.74 0.17 231);
-  --glass: oklch(0.95 0.014 250 / 0.62);
-  --glass-strong: oklch(0.98 0.008 250 / 0.72);
+  --glass: oklch(0.91 0.02 250 / 0.72);
+  --glass-strong: oklch(0.96 0.012 250 / 0.78);
   --line: oklch(0.62 0.16 244 / 0.14);
   --shadow-soft: 0 24px 80px oklch(0.43 0.1 248 / 0.13);
   --shadow-card: 0 15px 40px oklch(0.45 0.1 248 / 0.11), inset 0 4px 4px oklch(1 0 0 / 0.7);
@@ -53,7 +53,7 @@
 }
 
 .hub-shell { position: relative; min-height: 100svh; overflow: hidden; padding: 24px; isolation: isolate; }
-.ambient-glow { position: fixed; z-index: -2; inset: 0; background: radial-gradient(ellipse 46% 48% at 5% 2%, oklch(0.72 0.12 240 / 0.28), transparent 68%), radial-gradient(ellipse 32% 35% at 28% 12%, oklch(0.63 0.17 249 / 0.14), transparent 72%), linear-gradient(135deg, oklch(0.94 0.018 248), var(--background)); }
+.ambient-glow { position: fixed; z-index: -2; inset: 0; background: radial-gradient(ellipse 46% 48% at 5% 2%, oklch(0.7 0.12 240 / 0.28), transparent 68%), radial-gradient(ellipse 32% 35% at 28% 12%, oklch(0.59 0.17 249 / 0.15), transparent 72%), linear-gradient(135deg, oklch(0.89 0.026 248), var(--background)); }
 .network-mesh { position: fixed; z-index: -1; inset: 0; opacity: .55; pointer-events: none; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 72px 72px; mask-image: linear-gradient(to right, transparent, black 24%, black 85%, transparent); }
 .network-mesh::before { content: ""; position: absolute; width: 42vw; aspect-ratio: 1; right: -8vw; top: -15vw; border-radius: 50%; border: 1px solid var(--line); box-shadow: 0 0 90px oklch(0.66 0.17 246 / .18), inset 0 0 80px oklch(0.7 0.16 236 / .12); animation: breathe 8s ease-in-out infinite; }
 .mesh-node { position: absolute; width: 6px; height: 6px; border-radius: 99px; background: var(--primary); box-shadow: 0 0 0 7px oklch(0.62 0.2 250 / .08), 0 0 24px var(--primary); animation: pulse 3s ease-in-out infinite; }
