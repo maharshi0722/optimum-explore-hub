@@ -30,6 +30,7 @@ import scaleAsset from "@/assets/article-scale.jpeg.asset.json";
 import kentAsset from "@/assets/kent-lin.png.asset.json";
 import kishoriAsset from "@/assets/kishori-konwar.png.asset.json";
 import murielAsset from "@/assets/muriel-medard.png.asset.json";
+import optimumLoopAsset from "@/assets/optimum-loop.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -108,7 +109,9 @@ function OptimumHub() {
 
   const move = (direction: number) => {
     const next = (activeIndex + direction + modules.length) % modules.length;
-    setActive(modules[next].id);
+    const nextModule = modules[next];
+    if (!nextModule) return;
+    setActive(nextModule.id);
   };
 
   useEffect(() => {
@@ -130,9 +133,8 @@ function OptimumHub() {
       <div className="hub-frame">
         <aside className="module-rail">
           <a href="https://www.getoptimum.xyz/" target="_blank" rel="noreferrer" className="optimum-mark" aria-label="Visit Optimum">
-            <span className="optimum-symbol" aria-hidden="true">∞</span>
-            <span>OPTIMUM</span>
-            <em>SPACE</em>
+            <span className="optimum-symbol"><img src={optimumLoopAsset.url} alt="" /></span>
+            <span className="optimum-wordmark"><strong>OPTIMUM</strong><em>SPACE</em></span>
           </a>
 
           <nav className="module-nav" aria-label="Optimum Space modules">
@@ -222,7 +224,7 @@ function CardGrid({ items, kind }: { items: GridItem[]; kind: "links" | "people"
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.055, duration: 0.38 }}
           >
-            {item.image ? <div className="card-image"><img src={item.image} alt="" loading="lazy" /></div> : null}
+            {item.image ? <div className="card-image"><img src={item.image} alt={item.title} loading="lazy" /></div> : null}
             <div className="card-copy">
               <div className="card-icon">{Icon ? <Icon size={21} strokeWidth={1.65} /> : <span>0{index + 1}</span>}</div>
               <ArrowUpRight className="card-arrow" size={17} />
