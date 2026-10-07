@@ -22,16 +22,16 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 import aprImage from "@/assets/article-apr.png";
-import blockchainAsset from "@/assets/article-blockchain.png.asset.json";
-import flexnodesAsset from "@/assets/article-flexnodes.png.asset.json";
+import blockchainImage from "@/assets/article-blockchain.png";
+import flexnodesImage from "@/assets/article-flexnodes.png";
 import killerAppsImage from "@/assets/article-killer-apps.png";
 import p2pImage from "@/assets/article-p2p.png";
 import researchImage from "@/assets/article-research.png";
 import scaleImage from "@/assets/article-scale.png";
-import kentAsset from "@/assets/kent-lin.png.asset.json";
-import kishoriAsset from "@/assets/kishori-konwar.png.asset.json";
-import murielAsset from "@/assets/muriel-medard.png.asset.json";
-import optimumLoopAsset from "@/assets/optimum-loop.png.asset.json";
+import kentImage from "@/assets/kent-lin.png";
+import kishoriImage from "@/assets/kishori-konwar.png";
+import murielImage from "@/assets/muriel-medard.png";
+import optimumLoopImage from "@/assets/optimum-loop.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -67,19 +67,19 @@ const officialLinks = [
 ];
 
 const team = [
-  { title: "Kent Lin", detail: "Co-founder · Ecosystem, tokenomics and growth.", href: "https://www.getoptimum.xyz/", image: kentAsset.url },
-  { title: "Prof. Muriel Médard", detail: "Co-founder & CEO · MIT professor and network coding pioneer.", href: "https://www.getoptimum.xyz/", image: murielAsset.url },
-  { title: "Dr. Kishori Konwar", detail: "Co-founder · Distributed systems, coding theory and AI.", href: "https://www.getoptimum.xyz/", image: kishoriAsset.url },
+  { title: "Kent Lin", detail: "Co-founder · Ecosystem, tokenomics and growth.", href: "https://www.getoptimum.xyz/", image: kentImage },
+  { title: "Prof. Muriel Médard", detail: "Co-founder & CEO · MIT professor and network coding pioneer.", href: "https://www.getoptimum.xyz/", image: murielImage },
+  { title: "Dr. Kishori Konwar", detail: "Co-founder · Distributed systems, coding theory and AI.", href: "https://www.getoptimum.xyz/", image: kishoriImage },
 ];
 
 const reads = [
   { title: "Optimizing a $100B Market", detail: "Latency reduction and ETH staking revenue.", href: "https://x.com/get_optimum/status/2041916972678705375", image: aprImage },
-  { title: "Flexnodes", detail: "A global network of data accelerators.", href: "https://x.com/get_optimum/status/2013656494139678752", image: flexnodesAsset.url },
+  { title: "Flexnodes", detail: "A global network of data accelerators.", href: "https://x.com/get_optimum/status/2013656494139678752", image: flexnodesImage },
   { title: "Introducing OptimumP2P", detail: "Implementation and benefits.", href: "https://x.com/get_optimum/status/1930698870507626516", image: p2pImage },
   { title: "Decentralize to scale", detail: "Infrastructure for an onchain digital economy.", href: "https://x.com/kentlinyy/status/1963652915312349534", image: scaleImage },
   { title: "Tomorrow's killer apps", detail: "Unlocking next-generation performance.", href: "https://x.com/kentlinyy/status/1935026597150736432", image: killerAppsImage },
   { title: "Research & insights", detail: "Signals from Optimum's research ecosystem.", href: "https://x.com/MurielMedard/status/2086878404847317010", image: researchImage },
-  { title: "Rethinking the network layer", detail: "A new way to think about blockchain infrastructure.", href: "https://research.4pillars.io/en/research/optimum-rethinking-the-blockchain-network-layer/", image: blockchainAsset.url },
+  { title: "Rethinking the network layer", detail: "A new way to think about blockchain infrastructure.", href: "https://research.4pillars.io/en/research/optimum-rethinking-the-blockchain-network-layer/", image: blockchainImage },
 ];
 
 const playground = [
@@ -134,7 +134,7 @@ function OptimumHub() {
       <div className="hub-frame">
         <aside className="module-rail">
           <a href="https://www.getoptimum.xyz/" target="_blank" rel="noreferrer" className="optimum-mark" aria-label="Visit Optimum">
-            <span className="optimum-symbol"><img src={optimumLoopAsset.url} alt="" /></span>
+            <span className="optimum-symbol"><img src={optimumLoopImage} alt="" /></span>
             <span className="optimum-wordmark"><strong>OPTIMUM</strong><em>SPACE</em></span>
           </a>
 
@@ -237,4 +237,3 @@ function CardGrid({ items, kind }: { items: GridItem[]; kind: "links" | "people"
     </div>
   );
 }
-
