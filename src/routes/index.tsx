@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -32,6 +32,15 @@ import kentImage from "@/assets/kent-lin.png";
 import kishoriImage from "@/assets/kishori-konwar.png";
 import murielImage from "@/assets/muriel-medard.png";
 import optimumLoopImage from "@/assets/optimum-loop.png";
+import laboratoryAsset from "@/assets/optimum-laboratory.png.asset.json";
+import xLogo from "@/assets/logo-x.png";
+import discordLogo from "@/assets/logo-discord.png";
+import telegramLogo from "@/assets/logo-telegram.png";
+import youtubeLogo from "@/assets/logo-youtube.png";
+import githubLogo from "@/assets/logo-github.png";
+import playgroundApr from "@/assets/playground-apr.png";
+import playgroundSimulation from "@/assets/playground-simulation.png";
+import playgroundLatency from "@/assets/playground-latency.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -58,12 +67,12 @@ const modules = [
 type ModuleId = (typeof modules)[number]["id"];
 
 const officialLinks = [
-  { title: "Optimum website", detail: "The official home of the ecosystem.", href: "https://www.getoptimum.xyz/", icon: Globe2 },
-  { title: "X / Twitter", detail: "News and protocol updates.", href: "https://x.com/get_optimum", icon: Twitter },
-  { title: "Discord", detail: "Join the network community.", href: "https://discord.com/invite/getoptimum", icon: Users },
-  { title: "Telegram", detail: "Follow the community channel.", href: "https://t.me/+I1fmgPCPO5IxNzZl", icon: Send },
-  { title: "YouTube", detail: "Watch talks and explainers.", href: "https://www.youtube.com/@getoptimum", icon: Youtube },
-  { title: "GitHub", detail: "Explore the open-source stack.", href: "https://github.com/getoptimum/", icon: Github },
+  { title: "Optimum website", detail: "The official home of the ecosystem.", href: "https://www.getoptimum.xyz/", logo: optimumLoopImage },
+  { title: "X / Twitter", detail: "News and protocol updates.", href: "https://x.com/get_optimum", logo: xLogo },
+  { title: "Discord", detail: "Join the network community.", href: "https://discord.com/invite/getoptimum", logo: discordLogo },
+  { title: "Telegram", detail: "Follow the community channel.", href: "https://t.me/+I1fmgPCPO5IxNzZl", logo: telegramLogo },
+  { title: "YouTube", detail: "Watch talks and explainers.", href: "https://www.youtube.com/@getoptimum", logo: youtubeLogo },
+  { title: "GitHub", detail: "Explore the open-source stack.", href: "https://github.com/getoptimum/", logo: githubLogo },
 ];
 
 const team = [
@@ -83,9 +92,9 @@ const reads = [
 ];
 
 const playground = [
-  { title: "APR estimator", detail: "Estimate and explore APR.", href: "https://gmum.cc/apr_estimator/", icon: Calculator },
-  { title: "RLNC simulation", detail: "See Random Linear Network Coding in motion.", href: "https://gmum.cc/simulation/", icon: Code2 },
-  { title: "Latency game", detail: "Test the limits of speed.", href: "https://game.gmum.cc/", icon: Sparkles },
+  { title: "APR estimator", detail: "Estimate and explore APR.", href: "https://gmum.cc/apr_estimator/", icon: Calculator, image: playgroundApr },
+  { title: "RLNC simulation", detail: "See Random Linear Network Coding in motion.", href: "https://gmum.cc/simulation/", icon: Code2, image: playgroundSimulation },
+  { title: "Latency game", detail: "Test the limits of speed.", href: "https://game.gmum.cc/", icon: Sparkles, image: playgroundLatency },
 ];
 
 const explore = [
@@ -104,6 +113,7 @@ const moduleCopy: Record<ModuleId, { kicker: string; title: string; description:
 };
 
 function OptimumHub() {
+  const reducedMotion = useReducedMotion();
   const [active, setActive] = useState<ModuleId>("links");
   const activeIndex = modules.findIndex((module) => module.id === active);
   const copy = moduleCopy[active];
@@ -117,8 +127,10 @@ function OptimumHub() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowRight" || event.key === "ArrowDown") move(1);
-      if (event.key === "ArrowLeft" || event.key === "ArrowUp") move(-1);
+      const target = event.target;
+      if (target instanceof HTMLElement && target.closest("input, textarea, select, [contenteditable='true'], .module-grid-articles")) return;
+      if (event.key === "ArrowRight") { event.preventDefault(); move(1); }
+      if (event.key === "ArrowLeft") { event.preventDefault(); move(-1); }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -126,9 +138,8 @@ function OptimumHub() {
 
   return (
     <main className="hub-shell">
-      <div className="ambient-glow" aria-hidden="true" />
-      <div className="network-mesh" aria-hidden="true">
-        <i className="mesh-node mesh-node-a" /><i className="mesh-node mesh-node-b" /><i className="mesh-node mesh-node-c" />
+      <div className="laboratory-background" aria-hidden="true">
+        <img src={laboratoryAsset.url} alt="" fetchPriority="high" decoding="async" />
       </div>
 
       <div className="hub-frame">
@@ -172,10 +183,10 @@ function OptimumHub() {
           <AnimatePresence mode="wait">
             <motion.div
               key={active}
-              initial={{ opacity: 0, x: 28 }}
+              initial={{ opacity: 0, x: reducedMotion ? 0 : 28 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+              exit={{ opacity: 0, x: reducedMotion ? 0 : -20 }}
+              transition={{ duration: reducedMotion ? 0 : 0.32, ease: [0.22, 1, 0.36, 1] }}
               className="stage-content"
             >
               <header className="stage-heading">
@@ -207,9 +218,10 @@ function ModuleContent({ active }: { active: ModuleId }) {
   return <CardGrid items={officialLinks} kind="links" />;
 }
 
-type GridItem = { title: string; detail: string; href: string; image?: string; icon?: typeof Globe2 };
+type GridItem = { title: string; detail: string; href: string; image?: string; logo?: string; icon?: typeof Globe2 };
 
 function CardGrid({ items, kind }: { items: GridItem[]; kind: "links" | "people" | "articles" | "tools" }) {
+  const reducedMotion = useReducedMotion();
   return (
     <div className={`module-grid module-grid-${kind}`}>
       {items.map((item, index) => {
@@ -221,13 +233,13 @@ function CardGrid({ items, kind }: { items: GridItem[]; kind: "links" | "people"
             target="_blank"
             rel="noreferrer"
             className="tech-card"
-            initial={{ opacity: 0, y: 18 }}
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.055, duration: 0.38 }}
+            transition={{ delay: reducedMotion ? 0 : index * 0.04, duration: reducedMotion ? 0 : 0.3 }}
           >
             {item.image ? <div className="card-image"><img src={item.image} alt={item.title} loading="lazy" /></div> : null}
             <div className="card-copy">
-              <div className="card-icon">{Icon ? <Icon size={21} strokeWidth={1.65} /> : <span>0{index + 1}</span>}</div>
+              <div className="card-icon">{item.logo ? <img src={item.logo} alt="" /> : Icon ? <Icon size={21} strokeWidth={1.65} /> : <span>0{index + 1}</span>}</div>
               <ArrowUpRight className="card-arrow" size={17} />
               <div className="card-text"><h2>{item.title}</h2><p>{item.detail}</p></div>
             </div>

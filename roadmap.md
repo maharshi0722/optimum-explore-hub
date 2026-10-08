@@ -9,6 +9,7 @@
 - [x] Apply dark Cyberlayer-inspired styling without changing layout or content
 - [x] Correct logo proportions and preserve full founder/article imagery
 - [x] Verify all five modules, image loading and preview appearance
-- [ ] Bundle all displayed images as local PNG files rather than JSON pointers
-- [ ] Add the three supplied Playground previews and recognizable brand logos
+- [x] Bundle existing portraits, articles, Playground previews and brand logos as local PNG files
+- [x] Add the three supplied Playground previews and recognizable brand logos
 - [ ] Verify navigation and image presentation across phone, tablet and desktop sizes
+- [x] Use the supplied laboratory background with coordinated typography and sharp graphite cards
