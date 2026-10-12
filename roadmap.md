@@ -13,3 +13,4 @@
 - [x] Add the three supplied Playground previews and recognizable brand logos
 - [ ] Verify navigation and image presentation across phone, tablet and desktop sizes
 - [x] Use the supplied laboratory background with coordinated typography and sharp graphite cards
+- [ ] Finish the user-confirmed laboratory background treatment and production-quality typography/card contrast
