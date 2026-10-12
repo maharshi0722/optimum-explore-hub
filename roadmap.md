@@ -11,5 +11,6 @@
 - [x] Verify all five modules, image loading and preview appearance
 - [x] Bundle existing portraits, articles, Playground previews and brand logos as local PNG files
 - [x] Add the three supplied Playground previews and recognizable brand logos
-- [ ] Verify navigation and image presentation across phone, tablet and desktop sizes
+- [x] Verify navigation and image presentation across phone, tablet and desktop sizes
 - [x] Use the supplied laboratory background with coordinated typography and sharp graphite cards
+- [x] Finish the user-confirmed laboratory background treatment and production-quality typography/card contrast
