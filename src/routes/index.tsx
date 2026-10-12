@@ -32,7 +32,7 @@ import kentImage from "@/assets/kent-lin.png";
 import kishoriImage from "@/assets/kishori-konwar.png";
 import murielImage from "@/assets/muriel-medard.png";
 import optimumLoopImage from "@/assets/optimum-loop.png";
-import laboratoryAsset from "@/assets/optimum-laboratory.png.asset.json";
+import laboratoryAsset from "@/assets/optimum-laboratory.png";
 import xLogo from "@/assets/logo-x.png";
 import discordLogo from "@/assets/logo-discord.png";
 import telegramLogo from "@/assets/logo-telegram.png";
@@ -139,7 +139,7 @@ function OptimumHub() {
   return (
     <main className="hub-shell">
       <div className="laboratory-background" aria-hidden="true">
-        <img src={laboratoryAsset.url} alt="" fetchPriority="high" decoding="async" />
+        <img src={laboratoryAsset} alt="" fetchPriority="high" decoding="async" />
       </div>
 
       <div className="hub-frame">
