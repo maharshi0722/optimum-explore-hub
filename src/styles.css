@@ -206,6 +206,17 @@
   .card-copy { min-height: 132px; }
 }
 
+@media (max-width: 560px) {
+  .laboratory-background img { object-position: 50% 50%; transform: scale(1.08); }
+  .laboratory-background::after { background: linear-gradient(180deg, oklch(0.1 0.016 220 / 0.2) 0%, oklch(0.1 0.016 220 / 0.12) 58%, oklch(0.1 0.016 220 / 0.3) 100%); }
+  .module-nav { gap: 1px; }
+  .module-button { padding-inline: 2px; }
+  .module-name { font-size: 13px; }
+  .stage-heading h1 { font-size: 44px; }
+  .module-stage { padding-inline: 14px; }
+  .module-grid-links .card-copy { min-height: 150px; padding-inline: 14px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
