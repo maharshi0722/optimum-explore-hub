@@ -15,3 +15,4 @@
 - [x] Use the supplied laboratory background with coordinated typography and sharp graphite cards
 - [x] Finish the user-confirmed laboratory background treatment and production-quality typography/card contrast
 - [x] Brighten the lab-backed Optimum interface toward the newly attached reference while keeping the artwork visible and the five-module hub intact
+- [ ] Refine the mobile module selector and center the Optimum character in the phone background crop
