@@ -16,3 +16,4 @@
 - [x] Finish the user-confirmed laboratory background treatment and production-quality typography/card contrast
 - [x] Brighten the lab-backed Optimum interface toward the newly attached reference while keeping the artwork visible and the five-module hub intact
 - [x] Refine the mobile module selector and center the Optimum character in the phone background crop
+- [ ] Improve all three founder portrait presentations so the full images are clearly visible on every screen size
