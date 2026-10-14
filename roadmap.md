@@ -17,3 +17,5 @@
 - [x] Brighten the lab-backed Optimum interface toward the newly attached reference while keeping the artwork visible and the five-module hub intact
 - [x] Refine the mobile module selector and center the Optimum character in the phone background crop
 - [ ] Improve all three founder portrait presentations so the full images are clearly visible on every screen size
+- [ ] Add a sixth Community Highlights section and a seventh contribution form with contributor name, category, work details and X link
+- [ ] Persist approved community submissions so they appear in Community Highlights for all visitors
