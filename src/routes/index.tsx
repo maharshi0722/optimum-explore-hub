@@ -244,7 +244,12 @@ function OptimumHub() {
                 </div>
                 <p className="stage-description">{copy.description}</p>
               </header>
-              <ModuleContent active={active} />
+              <ModuleContent
+                active={active}
+                community={community}
+                communityLoadError={communityLoadError}
+                onCommunitySubmitted={(entry) => setCommunity((current) => [entry, ...current.filter((item) => item.id !== entry.id)])}
+              />
             </motion.div>
           </AnimatePresence>
 
@@ -258,14 +263,166 @@ function OptimumHub() {
   );
 }
 
-function ModuleContent({ active }: { active: ModuleId }) {
+function ModuleContent({
+  active,
+  community,
+  communityLoadError,
+  onCommunitySubmitted,
+}: {
+  active: ModuleId;
+  community: CommunitySubmission[];
+  communityLoadError: boolean;
+  onCommunitySubmitted: (entry: CommunitySubmission) => void;
+}) {
   if (active === "team") return <CardGrid items={team} kind="people" />;
   if (active === "reads") return <CardGrid items={reads} kind="articles" />;
   if (active === "playground") return <CardGrid items={playground} kind="tools" />;
   if (active === "explore") return <CardGrid items={explore} kind="tools" />;
   if (active === "community") return <CommunityHighlights items={community} loadError={communityLoadError} />;
-  if (active === "contribute") return <ContributionForm onSubmitted={(entry) => setCommunity((current) => [entry, ...current.filter((item) => item.id !== entry.id)])} />;
+  if (active === "contribute") return <ContributionForm onSubmitted={onCommunitySubmitted} />;
   return <CardGrid items={officialLinks} kind="links" />;
+}
+
+function CommunityHighlights({ items, loadError }: { items: CommunitySubmission[]; loadError: boolean }) {
+  const [filter, setFilter] = useState<string>("All work");
+  const filters = ["All work", ...communityCategories];
+  const filtered = filter === "All work" ? items : items.filter((item) => item.category === filter);
+
+  return (
+    <section className="community-section" aria-label="Community highlights">
+      <div className="community-toolbar">
+        <div className="community-count"><Users size={16} /><span>{items.length} shared works</span></div>
+        <div className="community-filters" aria-label="Filter community work">
+          {filters.map((category) => (
+            <Button
+              key={category}
+              type="button"
+              variant={filter === category ? "default" : "outline"}
+              onClick={() => setFilter(category)}
+              aria-pressed={filter === category}
+            >
+              {category}
+            </Button>
+          ))}
+        </div>
+      </div>
+      {loadError ? (
+        <p className="community-empty" role="status">Community work could not load right now. Please try again shortly.</p>
+      ) : filtered.length === 0 ? (
+        <div className="community-empty">
+          <Sparkles size={24} />
+          <h2>{items.length === 0 ? "The first highlight is yours." : `No ${filter.toLowerCase()} shared yet.`}</h2>
+          <p>Share your work and it will appear here for the whole community.</p>
+        </div>
+      ) : (
+        <div className="community-grid">
+          {filtered.map((item, index) => (
+            <motion.a
+              key={item.id}
+              href={item.x_url}
+              target="_blank"
+              rel="noreferrer"
+              className="community-card"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.025, duration: 0.25 }}
+            >
+              <span className="community-category">{item.category}</span>
+              <ArrowUpRight className="community-arrow" size={18} />
+              <h2>{item.work_title}</h2>
+              <div className="community-byline"><span>Shared by</span><strong>{item.contributor_name}</strong></div>
+            </motion.a>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function ContributionForm({ onSubmitted }: { onSubmitted: (entry: CommunitySubmission) => void }) {
+  const [contributorName, setContributorName] = useState("");
+  const [workTitle, setWorkTitle] = useState("");
+  const [category, setCategory] = useState<(typeof communityCategories)[number]>("Build");
+  const [xUrl, setXUrl] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setMessage("");
+    setSuccess(false);
+    let parsedUrl: URL;
+    try {
+      parsedUrl = new URL(xUrl.trim());
+    } catch {
+      setMessage("Add a valid public X post link to continue.");
+      return;
+    }
+    const host = parsedUrl.hostname.toLowerCase();
+    if (parsedUrl.protocol !== "https:" || !["x.com", "www.x.com", "twitter.com", "www.twitter.com"].includes(host)) {
+      setMessage("Use a public post link from x.com or twitter.com.");
+      return;
+    }
+
+    setSubmitting(true);
+    const { data, error } = await supabase
+      .from("community_submissions")
+      .insert({
+        contributor_name: contributorName.trim(),
+        work_title: workTitle.trim(),
+        category,
+        x_url: parsedUrl.toString(),
+      })
+      .select("id, contributor_name, work_title, category, x_url, created_at")
+      .single();
+    setSubmitting(false);
+    if (error || !data) {
+      setMessage("We couldn’t add that post just now. Please check the details and try again.");
+      return;
+    }
+    onSubmitted(data);
+    setSuccess(true);
+    setMessage("Your work is live in Community Highlights.");
+    setContributorName("");
+    setWorkTitle("");
+    setXUrl("");
+  };
+
+  return (
+    <div className="contribution-layout">
+      <aside className="contribution-note">
+        <span className="community-category">Community 06</span>
+        <h2>Your work, in the shared space.</h2>
+        <p>Share art, builds, technical work or video. Once submitted, it appears in Community Highlights for everyone.</p>
+        <span className="contribution-note-foot"><CheckCircle2 size={15} /> No account needed</span>
+      </aside>
+      <form className="contribution-form" onSubmit={submit}>
+        <label className="form-field">
+          <span>Contributor name</span>
+          <input value={contributorName} onChange={(event) => setContributorName(event.target.value)} minLength={2} maxLength={80} autoComplete="name" required placeholder="How should we credit you?" />
+        </label>
+        <label className="form-field">
+          <span>Work title</span>
+          <input value={workTitle} onChange={(event) => setWorkTitle(event.target.value)} minLength={2} maxLength={120} required placeholder="Give your work a name" />
+        </label>
+        <label className="form-field">
+          <span>Category</span>
+          <select value={category} onChange={(event) => setCategory(event.target.value as (typeof communityCategories)[number])}>
+            {communityCategories.map((item) => <option key={item} value={item}>{item}</option>)}
+          </select>
+        </label>
+        <label className="form-field">
+          <span>X post link</span>
+          <input value={xUrl} onChange={(event) => setXUrl(event.target.value)} type="url" inputMode="url" maxLength={500} required placeholder="https://x.com/you/status/..." />
+        </label>
+        <div className="form-submit-row">
+          <Button type="submit" disabled={submitting}>{submitting ? "Adding work…" : "Add to Community"}<ArrowUpRight size={16} /></Button>
+          {message ? <p className={success ? "form-message is-success" : "form-message"} role="status">{message}</p> : null}
+        </div>
+      </form>
+    </div>
+  );
 }
 
 type GridItem = { title: string; detail: string; href: string; image?: string; logo?: string; icon?: typeof Globe2 };
