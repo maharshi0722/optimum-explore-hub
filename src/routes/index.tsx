@@ -7,6 +7,7 @@ import {
   BookOpen,
   Box,
   Calculator,
+  CheckCircle2,
   Code2,
   FileText,
   Github,
@@ -18,8 +19,9 @@ import {
   Users,
   Youtube,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 import aprImage from "@/assets/article-apr.png";
 import blockchainImage from "@/assets/article-blockchain.png";
@@ -62,6 +64,8 @@ const modules = [
   { id: "reads", label: "Good read", note: "Research" },
   { id: "playground", label: "Playground", note: "Experiments" },
   { id: "explore", label: "Explore", note: "Go deeper" },
+  { id: "community", label: "Community", note: "Featured work" },
+  { id: "contribute", label: "Contribute", note: "Share your work" },
 ] as const;
 
 type ModuleId = (typeof modules)[number]["id"];
@@ -110,13 +114,57 @@ const moduleCopy: Record<ModuleId, { kicker: string; title: string; description:
   reads: { kicker: "Signals 03", title: "Ideas worth the bandwidth.", description: "Research, systems thinking and practical notes from inside the network." },
   playground: { kicker: "Lab 04", title: "Make the network tangible.", description: "Run the numbers, simulate the code and race against latency." },
   explore: { kicker: "Directory 05", title: "Go deeper into Optimum.", description: "Documentation, products and resources for builders and curious minds." },
+  community: { kicker: "Community 06", title: "Built across the network.", description: "Discover community art, builds, technical work and videos shared by Optimum contributors." },
+  contribute: { kicker: "Contribute 07", title: "Put your work in orbit.", description: "Share a public X post and tell the community what you have been making." },
 };
+
+type CommunitySubmission = {
+  id: string;
+  contributor_name: string;
+  work_title: string;
+  category: string;
+  x_url: string;
+  created_at: string;
+};
+
+const communityCategories = ["Art", "Build", "Technical", "Video"] as const;
 
 function OptimumHub() {
   const reducedMotion = useReducedMotion();
   const [active, setActive] = useState<ModuleId>("links");
+  const [community, setCommunity] = useState<CommunitySubmission[]>([]);
+  const [communityLoadError, setCommunityLoadError] = useState(false);
   const activeIndex = modules.findIndex((module) => module.id === active);
   const copy = moduleCopy[active];
+
+  useEffect(() => {
+    let mounted = true;
+    const loadCommunity = async () => {
+      const { data, error } = await supabase
+        .from("community_submissions")
+        .select("id, contributor_name, work_title, category, x_url, created_at")
+        .order("created_at", { ascending: false })
+        .limit(60);
+      if (!mounted) return;
+      if (error) {
+        setCommunityLoadError(true);
+        return;
+      }
+      setCommunityLoadError(false);
+      setCommunity(data ?? []);
+    };
+    void loadCommunity();
+    const channel = supabase
+      .channel("community-submissions-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "community_submissions" }, () => {
+        void loadCommunity();
+      })
+      .subscribe();
+    return () => {
+      mounted = false;
+      void supabase.removeChannel(channel);
+    };
+  }, []);
 
   const move = (direction: number) => {
     const next = (activeIndex + direction + modules.length) % modules.length;
@@ -202,7 +250,7 @@ function OptimumHub() {
 
           <footer className="stage-footer">
             <div className="progress-track"><span style={{ width: `${((activeIndex + 1) / modules.length) * 100}%` }} /></div>
-            <span>[ 0{activeIndex + 1} / 05 ]</span>
+            <span>[ 0{activeIndex + 1} / 07 ]</span>
           </footer>
         </section>
       </div>
@@ -215,6 +263,8 @@ function ModuleContent({ active }: { active: ModuleId }) {
   if (active === "reads") return <CardGrid items={reads} kind="articles" />;
   if (active === "playground") return <CardGrid items={playground} kind="tools" />;
   if (active === "explore") return <CardGrid items={explore} kind="tools" />;
+  if (active === "community") return <CommunityHighlights items={community} loadError={communityLoadError} />;
+  if (active === "contribute") return <ContributionForm onSubmitted={(entry) => setCommunity((current) => [entry, ...current.filter((item) => item.id !== entry.id)])} />;
   return <CardGrid items={officialLinks} kind="links" />;
 }
 
