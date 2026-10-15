@@ -21,7 +21,7 @@ import {
   Users,
   Youtube,
 } from "lucide-react";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -147,6 +147,7 @@ function OptimumHub() {
       const { data, error } = await supabase
         .from("community_submissions")
         .select("id, contributor_name, work_title, category, x_url, created_at, upvote_count, downvote_count")
+        .order("upvote_count", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(60);
       if (!mounted) return;
@@ -339,31 +340,18 @@ function CommunityHighlights({ items, loadError, onRefresh }: { items: Community
     const nextVote = previous === vote ? 0 : vote;
     setVotingId(submissionId);
     setVoteMessage("");
-    if (nextVote === 0) {
-      setVoteMarks((current) => ({ ...current, [submissionId]: 0 }));
+    const { error } = await supabase.rpc("cast_community_vote", { _submission_id: submissionId, _voter_key: voterKey, _vote: nextVote });
+    if (error) {
+      setVoteMessage("Your vote could not be saved. Please try again.");
+    } else {
       setVoteDelta((current) => ({
         ...current,
         [submissionId]: {
-          up: (current[submissionId]?.up ?? 0) - (previous === 1 ? 1 : 0),
-          down: (current[submissionId]?.down ?? 0) - (previous === -1 ? 1 : 0),
+          up: (current[submissionId]?.up ?? 0) - (previous === 1 ? 1 : 0) + (nextVote === 1 ? 1 : 0),
+          down: (current[submissionId]?.down ?? 0) - (previous === -1 ? 1 : 0) + (nextVote === -1 ? 1 : 0),
         },
       }));
-      const { error } = await supabase.from("community_votes").delete().eq("submission_id", submissionId).eq("voter_key", voterKey);
-      if (error) setVoteMessage("Your vote could not be removed. Please try again.");
-    } else {
-      const { error } = await supabase.rpc("cast_community_vote", { _submission_id: submissionId, _voter_key: voterKey, _vote: nextVote });
-      if (error) {
-        setVoteMessage("Your vote could not be saved. Please try again.");
-      } else {
-        setVoteDelta((current) => ({
-          ...current,
-          [submissionId]: {
-            up: (current[submissionId]?.up ?? 0) - (previous === 1 ? 1 : 0) + (nextVote === 1 ? 1 : 0),
-            down: (current[submissionId]?.down ?? 0) - (previous === -1 ? 1 : 0) + (nextVote === -1 ? 1 : 0),
-          },
-        }));
-        setVoteMarks((current) => ({ ...current, [submissionId]: nextVote }));
-      }
+      setVoteMarks((current) => ({ ...current, [submissionId]: nextVote }));
     }
     setVotingId(null);
     await onRefresh();
@@ -443,7 +431,7 @@ function TwitterPost({ url }: { url: string }) {
         script = document.createElement("script");
         script.src = "https://platform.twitter.com/widgets.js";
         script.async = true;
-        script.dataset.optimumXEmbed = "true";
+        script.dataset["optimumXEmbed"] = "true";
         document.body.appendChild(script);
       }
       script.addEventListener("load", loadEmbed, { once: true });
@@ -453,7 +441,7 @@ function TwitterPost({ url }: { url: string }) {
   }, [url]);
 
   return <div className="community-embed" ref={embedRef}>
-    <blockquote className="twitter-tweet" data-dnt="true"><a href={url}>View this post on X</a></blockquote>
+    <blockquote className="twitter-tweet" data-dnt="true" data-theme="dark" data-align="center"><a href={url}>View this post on X</a></blockquote>
   </div>;
 }
 
@@ -492,7 +480,7 @@ function ContributionForm({ onSubmitted }: { onSubmitted: (entry: CommunitySubmi
         category,
         x_url: parsedUrl.toString(),
       })
-      .select("id, contributor_name, work_title, category, x_url, created_at")
+      .select("id, contributor_name, work_title, category, x_url, created_at, upvote_count, downvote_count")
       .single();
     setSubmitting(false);
     if (error || !data) {
