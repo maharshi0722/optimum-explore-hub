@@ -19,7 +19,9 @@ export type Database = {
           category: string
           contributor_name: string
           created_at: string
+          downvote_count: number
           id: string
+          upvote_count: number
           work_title: string
           x_url: string
         }
@@ -27,7 +29,9 @@ export type Database = {
           category: string
           contributor_name: string
           created_at?: string
+          downvote_count?: number
           id?: string
+          upvote_count?: number
           work_title: string
           x_url: string
         }
@@ -35,7 +39,9 @@ export type Database = {
           category?: string
           contributor_name?: string
           created_at?: string
+          downvote_count?: number
           id?: string
+          upvote_count?: number
           work_title?: string
           x_url?: string
         }
@@ -78,7 +84,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cast_community_vote: {
+        Args: { _submission_id: string; _vote: number; _voter_key: string }
+        Returns: undefined
+      }
+      get_community_voter_marks: {
+        Args: { _voter_key: string }
+        Returns: {
+          submission_id: string
+          vote: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

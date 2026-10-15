@@ -15,6 +15,13 @@
       "when": 1792036946795,
       "tag": "0001_add_public_community_votes",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792037117511,
+      "tag": "0002_secure_community_vote_actions",
+      "breakpoints": true
     }
   ]
 }
