@@ -19,7 +19,9 @@ export type Database = {
           category: string
           contributor_name: string
           created_at: string
+          downvote_count: number
           id: string
+          upvote_count: number
           work_title: string
           x_url: string
         }
@@ -27,7 +29,9 @@ export type Database = {
           category: string
           contributor_name: string
           created_at?: string
+          downvote_count?: number
           id?: string
+          upvote_count?: number
           work_title: string
           x_url: string
         }
@@ -35,18 +39,62 @@ export type Database = {
           category?: string
           contributor_name?: string
           created_at?: string
+          downvote_count?: number
           id?: string
+          upvote_count?: number
           work_title?: string
           x_url?: string
         }
         Relationships: []
+      }
+      community_votes: {
+        Row: {
+          created_at: string
+          id: string
+          submission_id: string
+          vote: number
+          voter_key: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          submission_id: string
+          vote: number
+          voter_key: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          submission_id?: string
+          vote?: number
+          voter_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_votes_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "community_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cast_community_vote: {
+        Args: { _submission_id: string; _vote: number; _voter_key: string }
+        Returns: undefined
+      }
+      get_community_voter_marks: {
+        Args: { _voter_key: string }
+        Returns: {
+          submission_id: string
+          vote: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

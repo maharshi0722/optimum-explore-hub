@@ -19,3 +19,5 @@
 - [ ] Improve all three founder portrait presentations so the full images are clearly visible on every screen size
 - [ ] Add a sixth Community Highlights section and a seventh contribution form with contributor name, category, work details and X link
 - [ ] Persist approved community submissions so they appear in Community Highlights for all visitors
+- [ ] Make all seven modules easy to navigate on narrow phone screens
+- [ ] Improve Community Highlights with X post previews, images and shared upvote/downvote ranking

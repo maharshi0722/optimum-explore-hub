@@ -8,6 +8,8 @@ import {
   Box,
   Calculator,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
   Code2,
   FileText,
   Github,
@@ -19,7 +21,7 @@ import {
   Users,
   Youtube,
 } from "lucide-react";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -125,6 +127,8 @@ type CommunitySubmission = {
   category: string;
   x_url: string;
   created_at: string;
+  upvote_count: number;
+  downvote_count: number;
 };
 
 const communityCategories = ["Art", "Build", "Technical", "Video"] as const;
@@ -142,7 +146,8 @@ function OptimumHub() {
     const loadCommunity = async () => {
       const { data, error } = await supabase
         .from("community_submissions")
-        .select("id, contributor_name, work_title, category, x_url, created_at")
+        .select("id, contributor_name, work_title, category, x_url, created_at, upvote_count, downvote_count")
+        .order("upvote_count", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(60);
       if (!mounted) return;
@@ -248,6 +253,15 @@ function OptimumHub() {
                 active={active}
                 community={community}
                 communityLoadError={communityLoadError}
+                onCommunityRefresh={async () => {
+                  const { data, error } = await supabase
+                    .from("community_submissions")
+                    .select("id, contributor_name, work_title, category, x_url, created_at, upvote_count, downvote_count")
+                    .order("upvote_count", { ascending: false })
+                    .order("created_at", { ascending: false })
+                    .limit(60);
+                  if (!error && data) setCommunity(data);
+                }}
                 onCommunitySubmitted={(entry) => setCommunity((current) => [entry, ...current.filter((item) => item.id !== entry.id)])}
               />
             </motion.div>
@@ -267,26 +281,81 @@ function ModuleContent({
   active,
   community,
   communityLoadError,
+  onCommunityRefresh,
   onCommunitySubmitted,
 }: {
   active: ModuleId;
   community: CommunitySubmission[];
   communityLoadError: boolean;
+  onCommunityRefresh: () => Promise<void>;
   onCommunitySubmitted: (entry: CommunitySubmission) => void;
 }) {
   if (active === "team") return <CardGrid items={team} kind="people" />;
   if (active === "reads") return <CardGrid items={reads} kind="articles" />;
   if (active === "playground") return <CardGrid items={playground} kind="tools" />;
   if (active === "explore") return <CardGrid items={explore} kind="tools" />;
-  if (active === "community") return <CommunityHighlights items={community} loadError={communityLoadError} />;
+  if (active === "community") return <CommunityHighlights items={community} loadError={communityLoadError} onRefresh={onCommunityRefresh} />;
   if (active === "contribute") return <ContributionForm onSubmitted={onCommunitySubmitted} />;
   return <CardGrid items={officialLinks} kind="links" />;
 }
 
-function CommunityHighlights({ items, loadError }: { items: CommunitySubmission[]; loadError: boolean }) {
+function CommunityHighlights({ items, loadError, onRefresh }: { items: CommunitySubmission[]; loadError: boolean; onRefresh: () => Promise<void> }) {
   const [filter, setFilter] = useState<string>("All work");
+  const [voterKey, setVoterKey] = useState("");
+  const [voteMarks, setVoteMarks] = useState<Record<string, number>>({});
+  const [voteDelta, setVoteDelta] = useState<Record<string, { up: number; down: number }>>({});
+  const [votingId, setVotingId] = useState<string | null>(null);
+  const [voteMessage, setVoteMessage] = useState("");
   const filters = ["All work", ...communityCategories];
-  const filtered = filter === "All work" ? items : items.filter((item) => item.category === filter);
+  const filtered = (filter === "All work" ? items : items.filter((item) => item.category === filter))
+    .slice()
+    .sort((a, b) => {
+      const aScore = (a.upvote_count + (voteDelta[a.id]?.up ?? 0)) - (a.downvote_count + (voteDelta[a.id]?.down ?? 0));
+      const bScore = (b.upvote_count + (voteDelta[b.id]?.up ?? 0)) - (b.downvote_count + (voteDelta[b.id]?.down ?? 0));
+      return bScore - aScore || new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+
+  useEffect(() => {
+    let key = window.localStorage.getItem("optimum-community-voter");
+    if (!key || !/^[a-f0-9-]{36}$/i.test(key)) {
+      key = window.crypto.randomUUID();
+      window.localStorage.setItem("optimum-community-voter", key);
+    }
+    setVoterKey(key);
+  }, []);
+
+  useEffect(() => {
+    if (!voterKey) return;
+    let cancelled = false;
+    void supabase.rpc("get_community_voter_marks", { _voter_key: voterKey }).then(({ data, error }) => {
+      if (cancelled || error || !data) return;
+      setVoteMarks(Object.fromEntries(data.map((mark) => [mark.submission_id, mark.vote])));
+    });
+    return () => { cancelled = true; };
+  }, [voterKey]);
+
+  const castVote = async (submissionId: string, vote: 1 | -1) => {
+    if (!voterKey || votingId) return;
+    const previous = voteMarks[submissionId] ?? 0;
+    const nextVote = previous === vote ? 0 : vote;
+    setVotingId(submissionId);
+    setVoteMessage("");
+    const { error } = await supabase.rpc("cast_community_vote", { _submission_id: submissionId, _voter_key: voterKey, _vote: nextVote });
+    if (error) {
+      setVoteMessage("Your vote could not be saved. Please try again.");
+    } else {
+      setVoteDelta((current) => ({
+        ...current,
+        [submissionId]: {
+          up: (current[submissionId]?.up ?? 0) - (previous === 1 ? 1 : 0) + (nextVote === 1 ? 1 : 0),
+          down: (current[submissionId]?.down ?? 0) - (previous === -1 ? 1 : 0) + (nextVote === -1 ? 1 : 0),
+        },
+      }));
+      setVoteMarks((current) => ({ ...current, [submissionId]: nextVote }));
+    }
+    setVotingId(null);
+    await onRefresh();
+  };
 
   return (
     <section className="community-section" aria-label="Community highlights">
@@ -317,26 +386,63 @@ function CommunityHighlights({ items, loadError }: { items: CommunitySubmission[
       ) : (
         <div className="community-grid">
           {filtered.map((item, index) => (
-            <motion.a
+            <motion.article
               key={item.id}
-              href={item.x_url}
-              target="_blank"
-              rel="noreferrer"
               className="community-card"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.025, duration: 0.25 }}
             >
-              <span className="community-category">{item.category}</span>
-              <ArrowUpRight className="community-arrow" size={18} />
+              <div className="community-card-header">
+                <div className="community-author"><span className="community-category">{item.category}</span><strong>{item.contributor_name}</strong></div>
+                <div className="community-votes" aria-label="Vote on this post">
+                  <Button type="button" variant="ghost" className={voteMarks[item.id] === 1 ? "vote-button is-upvoted" : "vote-button"} aria-label={`Upvote ${item.work_title}`} aria-pressed={voteMarks[item.id] === 1} disabled={!voterKey || votingId !== null} onClick={() => void castVote(item.id, 1)}><ChevronUp size={19} /><span>{Math.max(0, item.upvote_count + (voteDelta[item.id]?.up ?? 0))}</span></Button>
+                  <Button type="button" variant="ghost" className={voteMarks[item.id] === -1 ? "vote-button is-downvoted" : "vote-button"} aria-label={`Downvote ${item.work_title}`} aria-pressed={voteMarks[item.id] === -1} disabled={!voterKey || votingId !== null} onClick={() => void castVote(item.id, -1)}><ChevronDown size={19} /><span>{Math.max(0, item.downvote_count + (voteDelta[item.id]?.down ?? 0))}</span></Button>
+                </div>
+              </div>
               <h2>{item.work_title}</h2>
-              <div className="community-byline"><span>Shared by</span><strong>{item.contributor_name}</strong></div>
-            </motion.a>
+              <TwitterPost url={item.x_url} />
+              <a className="community-open-post" href={item.x_url} target="_blank" rel="noreferrer">View on X <ArrowUpRight size={14} /></a>
+            </motion.article>
           ))}
         </div>
       )}
+      {voteMessage ? <p className="form-message" role="status">{voteMessage}</p> : null}
     </section>
   );
+}
+
+function TwitterPost({ url }: { url: string }) {
+  const embedRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const container = embedRef.current;
+    if (!container) return;
+    let cancelled = false;
+    const currentWindow = window as typeof window & { twttr?: { widgets?: { load: (target?: HTMLElement) => Promise<unknown> } } };
+    const loadEmbed = () => {
+      if (cancelled) return;
+      const twitter = currentWindow.twttr;
+      if (twitter?.widgets) {
+        void twitter.widgets.load(container);
+        return;
+      }
+      let script = document.querySelector<HTMLScriptElement>("script[data-optimum-x-embed]");
+      if (!script) {
+        script = document.createElement("script");
+        script.src = "https://platform.twitter.com/widgets.js";
+        script.async = true;
+        script.dataset["optimumXEmbed"] = "true";
+        document.body.appendChild(script);
+      }
+      script.addEventListener("load", loadEmbed, { once: true });
+    };
+    loadEmbed();
+    return () => { cancelled = true; };
+  }, [url]);
+
+  return <div className="community-embed" ref={embedRef}>
+    <blockquote className="twitter-tweet" data-dnt="true" data-theme="dark" data-align="center"><a href={url}>View this post on X</a></blockquote>
+  </div>;
 }
 
 function ContributionForm({ onSubmitted }: { onSubmitted: (entry: CommunitySubmission) => void }) {
@@ -374,7 +480,7 @@ function ContributionForm({ onSubmitted }: { onSubmitted: (entry: CommunitySubmi
         category,
         x_url: parsedUrl.toString(),
       })
-      .select("id, contributor_name, work_title, category, x_url, created_at")
+      .select("id, contributor_name, work_title, category, x_url, created_at, upvote_count, downvote_count")
       .single();
     setSubmitting(false);
     if (error || !data) {

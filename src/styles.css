@@ -182,6 +182,21 @@
 .form-submit-row button { display: inline-flex; min-height: 42px; align-items: center; gap: 9px; border-radius: 2px; }
 .form-message { margin: 0; color: var(--neon-orange); font-size: 12px; line-height: 1.5; }
 .form-message.is-success { color: var(--signal); }
+.community-card { min-width: 0; padding: 0; }
+.community-card-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 8px; padding: 16px 17px 0; }
+.community-author { display: grid; min-width: 0; justify-items: start; gap: 9px; }
+.community-author > strong { max-width: 100%; overflow: hidden; color: var(--muted-foreground); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.community-votes { display: grid; grid-auto-flow: column; gap: 3px; }
+.vote-button { display: inline-flex; min-width: 54px; height: 34px; justify-content: center; gap: 3px; padding: 0 7px; border: 1px solid var(--border); border-radius: 2px !important; background: var(--muted); color: var(--muted-foreground); font-family: var(--font-mono); font-size: 11px; }
+.vote-button:hover, .vote-button.is-upvoted { color: var(--signal); border-color: var(--signal); }
+.vote-button.is-downvoted { color: var(--neon-pink); border-color: var(--neon-pink); }
+.community-card h2 { margin: 0; padding: 16px 17px 12px; color: var(--foreground); font-size: 17px; }
+.community-embed { max-height: 390px; overflow: hidden; margin: 0 10px; border: 1px solid var(--border); background: var(--image-surface); }
+.community-embed .twitter-tweet { margin: 0 auto !important; }
+.community-embed iframe { width: 100% !important; max-width: 550px !important; }
+.community-open-post { display: inline-flex; align-items: center; align-self: flex-start; gap: 5px; margin: 12px 17px 16px; color: var(--primary); font-family: var(--font-mono); font-size: 10px; text-decoration: none; }
+.community-open-post:hover { text-decoration: underline; }
+.community-section > .form-message { padding: 0 3px; }
 .module-grid-articles { 
   grid-auto-flow: column; 
   grid-auto-columns: minmax(220px, 27%); 
@@ -221,23 +236,41 @@
   .hub-shell { padding: 12px; overflow: visible; }
   .hub-frame { grid-template-columns: 1fr; min-height: calc(100svh - 24px); overflow: visible; }
   .module-rail { padding: 20px; border-right: 0; border-bottom: 1px solid var(--border); }
-  .module-nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 3px; margin-top: 22px; }
-  .module-button { grid-template-columns: 1fr; min-width: 0; min-height: 48px; padding: 8px 4px; text-align: center; white-space: normal; } .module-name { font-size: 16px; }
-  .module-button::before, .module-number, .module-note, .rail-foot { display: none; }
+  .module-nav { display: flex; gap: 4px; margin: 18px -20px 0; padding: 0 20px 6px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; scrollbar-color: var(--primary) var(--muted); }
+  .module-button { display: grid; grid-template-columns: auto auto; flex: 0 0 auto; width: max-content; min-width: 104px; min-height: 42px; align-items: center; gap: 7px; padding: 8px 11px; text-align: left; white-space: nowrap; } .module-name { font-size: 15px; }
+  .module-button::before, .module-note, .rail-foot { display: none; }
+  .module-number { display: block; grid-row: auto; padding: 0; font-size: 11px; }
   .module-stage { min-height: calc(100svh - 195px); padding: 24px; }
   .stage-heading { grid-template-columns: 1fr; gap: 16px; }
   .module-grid-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .module-grid-people, .module-grid-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .community-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-height: 62vh; }
+  .module-grid-people .card-image { height: clamp(320px, 48vh, 500px); }
 }
 
 @media (max-width: 560px) {
   .hub-shell { padding: 0; }
   .hub-frame { min-height: 100svh; border-width: 0; border-radius: 0; }
   .optimum-mark { font-size: 16px; }
-  .module-stage { min-height: calc(100svh - 160px); padding: 18px 16px; } .laboratory-background img { object-position: 50% center; } .stage-content { padding-top: 26px; } .module-rail { padding: 18px; }
+  .module-stage { min-height: calc(100svh - 160px); padding: 18px 16px; } .laboratory-background img { object-position: 50% center; } .stage-content { padding-top: 26px; } .module-rail { padding: 16px 14px 12px; }
   .stage-heading h1 { font-size: 48px; letter-spacing: 0; }
   .stage-description { font-size: 14px; }
   .module-grid-links { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } .module-grid-people, .module-grid-tools { grid-template-columns: 1fr; } .module-grid-links .card-copy { padding: 16px; }
+  .module-grid-people .card-image { height: min(62svh, 500px); min-height: 340px; }
+  .community-toolbar { grid-template-columns: 1fr; gap: 10px; }
+  .community-filters { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding: 0 0 5px; scrollbar-width: thin; }
+  .community-filters button { flex: 0 0 auto; }
+  .community-grid { grid-template-columns: minmax(0, 1fr); max-height: none; overflow: visible; }
+  .community-card { min-height: 180px; }
+  .community-embed { max-height: 420px; }
+  .contribution-layout { grid-template-columns: 1fr; gap: 10px; }
+  .contribution-note { min-height: 0; padding: 18px; }
+  .contribution-note h2 { margin-top: 16px; font-size: 30px; }
+  .contribution-note-foot { margin-top: 15px; padding-top: 0; }
+  .contribution-form { gap: 12px; padding: 17px; }
+  .stage-topbar { gap: 8px; font-size: 9px; }
+  .stage-actions { flex: 0 0 auto; }
+  .stage-heading h1 { overflow-wrap: anywhere; }
   .card-copy { min-height: 132px; }
 }
 
@@ -246,10 +279,25 @@
   .laboratory-background::after { background: linear-gradient(180deg, oklch(0.1 0.016 220 / 0.2) 0%, oklch(0.1 0.016 220 / 0.12) 58%, oklch(0.1 0.016 220 / 0.3) 100%); }
   .module-nav { gap: 1px; }
   .module-button { padding-inline: 2px; }
+  .module-button { min-width: max-content; padding-inline: 10px; }
+  .module-number { display: none; }
   .module-name { font-size: 13px; }
   .stage-heading h1 { font-size: 44px; }
   .module-stage { padding-inline: 14px; }
   .module-grid-links .card-copy { min-height: 150px; padding-inline: 14px; }
+}
+
+@media (max-width: 380px) {
+  .optimum-wordmark strong { font-size: 16px; }
+  .module-stage { padding-inline: 12px; }
+  .stage-heading h1 { font-size: 40px; }
+  .module-grid-links { grid-template-columns: 1fr; }
+  .module-grid-links .card-copy { min-height: 118px; }
+  .community-card-header { padding-inline: 13px; }
+  .community-card h2 { padding-inline: 13px; }
+  .community-open-post { margin-inline: 13px; }
+  .community-votes { gap: 2px; }
+  .vote-button { min-width: 46px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
