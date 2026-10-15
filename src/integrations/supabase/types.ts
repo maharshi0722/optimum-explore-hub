@@ -41,6 +41,38 @@ export type Database = {
         }
         Relationships: []
       }
+      community_votes: {
+        Row: {
+          created_at: string
+          id: string
+          submission_id: string
+          vote: number
+          voter_key: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          submission_id: string
+          vote: number
+          voter_key: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          submission_id?: string
+          vote?: number
+          voter_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_votes_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "community_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
