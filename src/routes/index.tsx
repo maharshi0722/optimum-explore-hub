@@ -14,13 +14,11 @@ import {
   FileText,
   Github,
   Globe2,
-  Menu,
   Radio,
   Send,
   Sparkles,
   Twitter,
   Users,
-  X,
   Youtube,
 } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -140,18 +138,8 @@ function OptimumHub() {
   const [active, setActive] = useState<ModuleId>("links");
   const [community, setCommunity] = useState<CommunitySubmission[]>([]);
   const [communityLoadError, setCommunityLoadError] = useState(false);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const activeIndex = modules.findIndex((module) => module.id === active);
   const copy = moduleCopy[active];
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 900) setMobileNavOpen(false);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -203,7 +191,9 @@ function OptimumHub() {
 
   const selectModule = (moduleId: ModuleId) => {
     setActive(moduleId);
-    setMobileNavOpen(false);
+    if (typeof window !== "undefined" && window.matchMedia("(max-width: 900px)").matches) {
+      window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+    }
   };
 
   return (
@@ -212,41 +202,29 @@ function OptimumHub() {
         <img src={laboratoryAsset} alt="" fetchPriority="high" decoding="async" />
       </div>
 
-      <header className="mobile-topbar" aria-label="Mobile navigation header">
+      <header className="mobile-topbar">
         <a href="https://www.getoptimum.xyz/" target="_blank" rel="noreferrer" className="optimum-mark" aria-label="Visit Optimum">
           <span className="optimum-symbol"><img src={optimumLoopImage} alt="" /></span>
           <span className="optimum-wordmark"><strong>OPTIMUM</strong><em>SPACE</em></span>
         </a>
-
-        <Button
-          type="button"
-          variant="ghost"
-          className="mobile-menu-button"
-          aria-label={mobileNavOpen ? "Close navigation" : "Open navigation"}
-          aria-expanded={mobileNavOpen}
-          onClick={() => setMobileNavOpen((current) => !current)}
-        >
-          {mobileNavOpen ? <X size={18} /> : <Menu size={18} />}
-        </Button>
+        <span className="mobile-topbar-tagline">Scale any chain.</span>
       </header>
 
-      {mobileNavOpen ? <button type="button" className="mobile-nav-backdrop" aria-label="Close navigation" onClick={() => setMobileNavOpen(false)} /> : null}
-
       <div className="hub-frame">
-        <aside className={`module-rail ${mobileNavOpen ? "is-open" : ""}`}>
+        <aside className="module-rail">
           <nav className="module-nav" aria-label="Optimum Space modules">
             {modules.map((module, index) => (
-              <Button variant="ghost"
+              <button
                 key={module.id}
                 type="button"
                 onClick={() => selectModule(module.id)}
                 className={`module-button ${active === module.id ? "is-active" : ""}`}
                 aria-current={active === module.id ? "page" : undefined}
               >
-                <span className="module-number">0{index + 1}</span>
+                <span className="module-number" aria-hidden="true">0{index + 1}</span>
                 <span className="module-name">{module.label}</span>
                 <span className="module-note">{module.note}</span>
-              </Button>
+              </button>
             ))}
           </nav>
 
