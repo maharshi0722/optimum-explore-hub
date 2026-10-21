@@ -194,10 +194,33 @@
   .hub-shell { padding: 12px; overflow: visible; }
   .hub-frame { grid-template-columns: 1fr; min-height: calc(100svh - 24px); overflow: visible; }
   .module-rail { padding: 20px; border-right: 0; border-bottom: 1px solid var(--border); }
-  .module-nav { display: flex; gap: 4px; margin: 18px -20px 0; padding: 0 20px 6px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; scrollbar-color: var(--primary) var(--muted); }
-  .module-button { display: grid; grid-template-columns: auto auto; flex: 0 0 auto; width: max-content; min-width: 104px; min-height: 42px; align-items: center; gap: 7px; padding: 8px 11px; }
+  .module-nav {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin: 18px -20px 0;
+    padding: 0 20px 8px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) var(--muted);
+    -webkit-overflow-scrolling: touch;
+  }
+  .module-button {
+    display: grid;
+    grid-template-columns: auto auto;
+    flex: 0 0 auto;
+    width: max-content;
+    min-width: 118px;
+    min-height: 52px;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    white-space: nowrap;
+  }
   .module-button::before, .module-note, .rail-foot { display: none; }
   .module-number { display: block; grid-row: auto; padding: 0; font-size: 11px; }
+  .module-name { font-size: 13px; }
   .module-stage { min-height: calc(100svh - 195px); padding: 24px; }
   .stage-heading { grid-template-columns: 1fr; gap: 16px; }
   .module-grid-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -210,10 +233,22 @@
   .hub-shell { padding: 0; }
   .hub-frame { min-height: 100svh; border-width: 0; border-radius: 0; }
   .optimum-mark { font-size: 16px; }
+  .module-rail { padding: 16px 14px 12px; }
+  .module-nav {
+    gap: 6px;
+    margin-inline: -14px;
+    padding-inline: 14px;
+  }
+  .module-button {
+    min-width: 104px;
+    min-height: 46px;
+    padding: 9px 10px;
+  }
+  .module-number { display: none; }
+  .module-name { font-size: 12px; }
   .module-stage { min-height: calc(100svh - 160px); padding: 18px 16px; }
   .laboratory-background img { object-position: 50% center; }
   .stage-content { padding-top: 26px; }
-  .module-rail { padding: 16px 14px 12px; }
   .stage-heading h1 { font-size: 48px; letter-spacing: 0; }
   .stage-description { font-size: 14px; }
   .module-grid-links { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
