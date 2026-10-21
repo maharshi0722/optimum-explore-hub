@@ -14,11 +14,13 @@ import {
   FileText,
   Github,
   Globe2,
+  Menu,
   Radio,
   Send,
   Sparkles,
   Twitter,
   Users,
+  X,
   Youtube,
 } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -138,8 +140,18 @@ function OptimumHub() {
   const [active, setActive] = useState<ModuleId>("links");
   const [community, setCommunity] = useState<CommunitySubmission[]>([]);
   const [communityLoadError, setCommunityLoadError] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const activeIndex = modules.findIndex((module) => module.id === active);
   const copy = moduleCopy[active];
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 900) setMobileNavOpen(false);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -189,14 +201,39 @@ function OptimumHub() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [activeIndex]);
 
+  const selectModule = (moduleId: ModuleId) => {
+    setActive(moduleId);
+    setMobileNavOpen(false);
+  };
+
   return (
     <main className="hub-shell">
       <div className="laboratory-background" aria-hidden="true">
         <img src={laboratoryAsset} alt="" fetchPriority="high" decoding="async" />
       </div>
 
+      {mobileNavOpen ? <button type="button" className="mobile-nav-backdrop" aria-label="Close navigation" onClick={() => setMobileNavOpen(false)} /> : null}
+
+      <header className="mobile-topbar" aria-label="Mobile navigation header">
+        <a href="https://www.getoptimum.xyz/" target="_blank" rel="noreferrer" className="optimum-mark" aria-label="Visit Optimum">
+          <span className="optimum-symbol"><img src={optimumLoopImage} alt="" /></span>
+          <span className="optimum-wordmark"><strong>OPTIMUM</strong><em>SPACE</em></span>
+        </a>
+
+        <Button
+          type="button"
+          variant="ghost"
+          className="mobile-menu-button"
+          aria-label={mobileNavOpen ? "Close navigation" : "Open navigation"}
+          aria-expanded={mobileNavOpen}
+          onClick={() => setMobileNavOpen((current) => !current)}
+        >
+          {mobileNavOpen ? <X size={18} /> : <Menu size={18} />}
+        </Button>
+      </header>
+
       <div className="hub-frame">
-        <aside className="module-rail">
+        <aside className={`module-rail ${mobileNavOpen ? "is-open" : ""}`}>
           <a href="https://www.getoptimum.xyz/" target="_blank" rel="noreferrer" className="optimum-mark" aria-label="Visit Optimum">
             <span className="optimum-symbol"><img src={optimumLoopImage} alt="" /></span>
             <span className="optimum-wordmark"><strong>OPTIMUM</strong><em>SPACE</em></span>
@@ -207,7 +244,7 @@ function OptimumHub() {
               <Button variant="ghost"
                 key={module.id}
                 type="button"
-                onClick={() => setActive(module.id)}
+                onClick={() => selectModule(module.id)}
                 className={`module-button ${active === module.id ? "is-active" : ""}`}
                 aria-current={active === module.id ? "page" : undefined}
               >
@@ -395,8 +432,12 @@ function CommunityHighlights({ items, loadError, onRefresh }: { items: Community
               <div className="community-card-header">
                 <div className="community-author"><span className="community-category">{item.category}</span><strong>{item.contributor_name}</strong></div>
                 <div className="community-votes" aria-label="Vote on this post">
-                  <Button type="button" variant="ghost" className={voteMarks[item.id] === 1 ? "vote-button is-upvoted" : "vote-button"} aria-label={`Upvote ${item.work_title}`} aria-pressed={voteMarks[item.id] === 1} disabled={!voterKey || votingId !== null} onClick={() => void castVote(item.id, 1)}><ChevronUp size={19} /><span>{Math.max(0, item.upvote_count)}</span></Button>
-                  <Button type="button" variant="ghost" className={voteMarks[item.id] === -1 ? "vote-button is-downvoted" : "vote-button"} aria-label={`Downvote ${item.work_title}`} aria-pressed={voteMarks[item.id] === -1} disabled={!voterKey || votingId !== null} onClick={() => void castVote(item.id, -1)}><ChevronDown size={19} /><span>{Math.max(0, item.downvote_count)}</span></Button>
+                  <Button type="button" variant="ghost" className={voteMarks[item.id] === 1 ? "vote-button is-upvoted" : "vote-button"} aria-label={`Upvote ${item.work_title}`} aria-pressed={voteMarks[item.id] === 1} onClick={() => castVote(item.id, 1)}>
+                    <ChevronUp size={14} /> {item.upvote_count}
+                  </Button>
+                  <Button type="button" variant="ghost" className={voteMarks[item.id] === -1 ? "vote-button is-downvoted" : "vote-button"} aria-label={`Downvote ${item.work_title}`} aria-pressed={voteMarks[item.id] === -1} onClick={() => castVote(item.id, -1)}>
+                    <ChevronDown size={14} /> {item.downvote_count}
+                  </Button>
                 </div>
               </div>
               <h2>{item.work_title}</h2>
