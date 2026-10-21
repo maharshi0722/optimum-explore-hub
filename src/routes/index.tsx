@@ -212,8 +212,6 @@ function OptimumHub() {
         <img src={laboratoryAsset} alt="" fetchPriority="high" decoding="async" />
       </div>
 
-      {mobileNavOpen ? <button type="button" className="mobile-nav-backdrop" aria-label="Close navigation" onClick={() => setMobileNavOpen(false)} /> : null}
-
       <header className="mobile-topbar" aria-label="Mobile navigation header">
         <a href="https://www.getoptimum.xyz/" target="_blank" rel="noreferrer" className="optimum-mark" aria-label="Visit Optimum">
           <span className="optimum-symbol"><img src={optimumLoopImage} alt="" /></span>
@@ -232,13 +230,10 @@ function OptimumHub() {
         </Button>
       </header>
 
+      {mobileNavOpen ? <button type="button" className="mobile-nav-backdrop" aria-label="Close navigation" onClick={() => setMobileNavOpen(false)} /> : null}
+
       <div className="hub-frame">
         <aside className={`module-rail ${mobileNavOpen ? "is-open" : ""}`}>
-          <a href="https://www.getoptimum.xyz/" target="_blank" rel="noreferrer" className="optimum-mark" aria-label="Visit Optimum">
-            <span className="optimum-symbol"><img src={optimumLoopImage} alt="" /></span>
-            <span className="optimum-wordmark"><strong>OPTIMUM</strong><em>SPACE</em></span>
-          </a>
-
           <nav className="module-nav" aria-label="Optimum Space modules">
             {modules.map((module, index) => (
               <Button variant="ghost"
