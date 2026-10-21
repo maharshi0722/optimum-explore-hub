@@ -94,7 +94,7 @@ const reads = [
   { title: "Decentralize to scale", detail: "Infrastructure for an onchain digital economy.", href: "https://x.com/kentlinyy/status/1963652915312349534", image: scaleImage },
   { title: "Tomorrow's killer apps", detail: "Unlocking next-generation performance.", href: "https://x.com/kentlinyy/status/1935026597150736432", image: killerAppsImage },
   { title: "Research & insights", detail: "Signals from Optimum's research ecosystem.", href: "https://x.com/MurielMedard/status/2086878404847317010", image: researchImage },
-  { title: "Rethinking the network layer", detail: "A new way to think about blockchain infrastructure.", href: "https://research.4pillars.io/en/research/optimum-rethinking-the-blockchain-network-layer/", image: blockchainImage },
+  { title: "Rethinking the network layer", detail: "A new way to think about blockchain infrastructure.", href: "https://research.4pillars.io/en/research/optimum-rethinking-the-blockchain-network-layer", image: blockchainImage },
 ];
 
 const playground = [
@@ -303,15 +303,14 @@ function CommunityHighlights({ items, loadError, onRefresh }: { items: Community
   const [filter, setFilter] = useState<string>("All work");
   const [voterKey, setVoterKey] = useState("");
   const [voteMarks, setVoteMarks] = useState<Record<string, number>>({});
-  const [voteDelta, setVoteDelta] = useState<Record<string, { up: number; down: number }>>({});
   const [votingId, setVotingId] = useState<string | null>(null);
   const [voteMessage, setVoteMessage] = useState("");
   const filters = ["All work", ...communityCategories];
   const filtered = (filter === "All work" ? items : items.filter((item) => item.category === filter))
     .slice()
     .sort((a, b) => {
-      const aScore = (a.upvote_count + (voteDelta[a.id]?.up ?? 0)) - (a.downvote_count + (voteDelta[a.id]?.down ?? 0));
-      const bScore = (b.upvote_count + (voteDelta[b.id]?.up ?? 0)) - (b.downvote_count + (voteDelta[b.id]?.down ?? 0));
+      const aScore = a.upvote_count - a.downvote_count;
+      const bScore = b.upvote_count - b.downvote_count;
       return bScore - aScore || new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
 
@@ -337,22 +336,22 @@ function CommunityHighlights({ items, loadError, onRefresh }: { items: Community
   const castVote = async (submissionId: string, vote: 1 | -1) => {
     if (!voterKey || votingId) return;
     const previous = voteMarks[submissionId] ?? 0;
-    const nextVote = previous === vote ? 0 : vote;
+    if (previous === vote) return;
+
     setVotingId(submissionId);
     setVoteMessage("");
-    const { error } = await supabase.rpc("cast_community_vote", { _submission_id: submissionId, _voter_key: voterKey, _vote: nextVote });
+    const { error } = await supabase.rpc("cast_community_vote", {
+      _submission_id: submissionId,
+      _voter_key: voterKey,
+      _vote: vote,
+    });
+
     if (error) {
       setVoteMessage("Your vote could not be saved. Please try again.");
     } else {
-      setVoteDelta((current) => ({
-        ...current,
-        [submissionId]: {
-          up: (current[submissionId]?.up ?? 0) - (previous === 1 ? 1 : 0) + (nextVote === 1 ? 1 : 0),
-          down: (current[submissionId]?.down ?? 0) - (previous === -1 ? 1 : 0) + (nextVote === -1 ? 1 : 0),
-        },
-      }));
-      setVoteMarks((current) => ({ ...current, [submissionId]: nextVote }));
+      setVoteMarks((current) => ({ ...current, [submissionId]: vote }));
     }
+
     setVotingId(null);
     await onRefresh();
   };
@@ -396,8 +395,8 @@ function CommunityHighlights({ items, loadError, onRefresh }: { items: Community
               <div className="community-card-header">
                 <div className="community-author"><span className="community-category">{item.category}</span><strong>{item.contributor_name}</strong></div>
                 <div className="community-votes" aria-label="Vote on this post">
-                  <Button type="button" variant="ghost" className={voteMarks[item.id] === 1 ? "vote-button is-upvoted" : "vote-button"} aria-label={`Upvote ${item.work_title}`} aria-pressed={voteMarks[item.id] === 1} disabled={!voterKey || votingId !== null} onClick={() => void castVote(item.id, 1)}><ChevronUp size={19} /><span>{Math.max(0, item.upvote_count + (voteDelta[item.id]?.up ?? 0))}</span></Button>
-                  <Button type="button" variant="ghost" className={voteMarks[item.id] === -1 ? "vote-button is-downvoted" : "vote-button"} aria-label={`Downvote ${item.work_title}`} aria-pressed={voteMarks[item.id] === -1} disabled={!voterKey || votingId !== null} onClick={() => void castVote(item.id, -1)}><ChevronDown size={19} /><span>{Math.max(0, item.downvote_count + (voteDelta[item.id]?.down ?? 0))}</span></Button>
+                  <Button type="button" variant="ghost" className={voteMarks[item.id] === 1 ? "vote-button is-upvoted" : "vote-button"} aria-label={`Upvote ${item.work_title}`} aria-pressed={voteMarks[item.id] === 1} disabled={!voterKey || votingId !== null} onClick={() => void castVote(item.id, 1)}><ChevronUp size={19} /><span>{Math.max(0, item.upvote_count)}</span></Button>
+                  <Button type="button" variant="ghost" className={voteMarks[item.id] === -1 ? "vote-button is-downvoted" : "vote-button"} aria-label={`Downvote ${item.work_title}`} aria-pressed={voteMarks[item.id] === -1} disabled={!voterKey || votingId !== null} onClick={() => void castVote(item.id, -1)}><ChevronDown size={19} /><span>{Math.max(0, item.downvote_count)}</span></Button>
                 </div>
               </div>
               <h2>{item.work_title}</h2>
