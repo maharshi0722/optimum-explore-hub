@@ -212,6 +212,10 @@ function OptimumHub() {
 
       <div className="hub-frame">
         <aside className="module-rail">
+          <a href="https://www.getoptimum.xyz/" target="_blank" rel="noreferrer" className="optimum-mark rail-brand" aria-label="Visit Optimum">
+            <span className="optimum-symbol"><img src={optimumLoopImage} alt="" /></span>
+            <span className="optimum-wordmark"><strong>OPTIMUM</strong><em>SPACE</em></span>
+          </a>
           <nav className="module-nav" aria-label="Optimum Space modules">
             {modules.map((module, index) => (
               <button
