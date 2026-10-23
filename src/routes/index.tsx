@@ -213,7 +213,7 @@ function OptimumHub() {
       <header className="mobile-topbar">
         <a href="https://www.getoptimum.xyz/" target="_blank" rel="noreferrer" className="optimum-mark" aria-label="Visit Optimum">
           <span className="optimum-symbol"><img src={optimumLoopImage} alt="" /></span>
-          <span className="optimum-wordmark"><strong>OPTIMUM</strong><em>SPACE</em></span>
+          
         </a>
         <span className="mobile-topbar-tagline">Scale any chain.</span>
       </header>
