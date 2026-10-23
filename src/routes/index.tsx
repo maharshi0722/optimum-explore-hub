@@ -12,14 +12,10 @@ import {
   ChevronUp,
   Code2,
   FileText,
-  Github,
   Globe2,
   Radio,
-  Send,
   Sparkles,
-  Twitter,
   Users,
-  Youtube,
 } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
@@ -32,6 +28,7 @@ import killerAppsImage from "@/assets/article-killer-apps.png";
 import p2pImage from "@/assets/article-p2p.png";
 import researchImage from "@/assets/article-research.png";
 import scaleImage from "@/assets/article-scale.png";
+import mainnetImage from "@/assets/mainnet.png";
 import kentImage from "@/assets/kent-lin.png";
 import kishoriImage from "@/assets/kishori-konwar.png";
 import murielImage from "@/assets/muriel-medard.png";
@@ -87,7 +84,9 @@ const team = [
   { title: "Dr. Kishori Konwar", detail: "Co-founder · Distributed systems, coding theory and AI.", href: "https://www.getoptimum.xyz/", image: kishoriImage },
 ];
 
-const reads = [
+const reads: GridItem[] = [
+  // TODO: replace this href with the exact post / article link for the mainnet announcement.
+  { title: "$3.4B Total Value Boosted", detail: "mump2p is live on Ethereum mainnet.", href: "https://x.com/get_optimum", image: mainnetImage, badge: "Live" },
   { title: "Optimizing a $100B Market", detail: "Latency reduction and ETH staking revenue.", href: "https://x.com/get_optimum/status/2041916972678705375", image: aprImage },
   { title: "Flexnodes", detail: "A global network of data accelerators.", href: "https://x.com/get_optimum/status/2013656494139678752", image: flexnodesImage },
   { title: "Introducing OptimumP2P", detail: "Implementation and benefits.", href: "https://x.com/get_optimum/status/1930698870507626516", image: p2pImage },
@@ -133,6 +132,17 @@ type CommunitySubmission = {
 
 const communityCategories = ["Art", "Build", "Technical", "Video"] as const;
 
+const SUBMISSION_COLUMNS = "id, contributor_name, work_title, category, x_url, created_at, upvote_count, downvote_count";
+
+async function fetchCommunity() {
+  return supabase
+    .from("community_submissions")
+    .select(SUBMISSION_COLUMNS)
+    .order("upvote_count", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(60);
+}
+
 function OptimumHub() {
   const reducedMotion = useReducedMotion();
   const [active, setActive] = useState<ModuleId>("links");
@@ -144,12 +154,7 @@ function OptimumHub() {
   useEffect(() => {
     let mounted = true;
     const loadCommunity = async () => {
-      const { data, error } = await supabase
-        .from("community_submissions")
-        .select("id, contributor_name, work_title, category, x_url, created_at, upvote_count, downvote_count")
-        .order("upvote_count", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(60);
+      const { data, error } = await fetchCommunity();
       if (!mounted) return;
       if (error) {
         setCommunityLoadError(true);
@@ -248,12 +253,13 @@ function OptimumHub() {
           </div>
 
           <AnimatePresence mode="wait">
+            {/* Animate vertically only: a sideways x offset can widen the page on phones. */}
             <motion.div
               key={active}
-              initial={{ opacity: 0, x: reducedMotion ? 0 : 28 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: reducedMotion ? 0 : -20 }}
-              transition={{ duration: reducedMotion ? 0 : 0.32, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, y: reducedMotion ? 0 : 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: reducedMotion ? 0 : -8 }}
+              transition={{ duration: reducedMotion ? 0 : 0.26, ease: [0.22, 1, 0.36, 1] }}
               className="stage-content"
             >
               <header className="stage-heading">
@@ -268,12 +274,7 @@ function OptimumHub() {
                 community={community}
                 communityLoadError={communityLoadError}
                 onCommunityRefresh={async () => {
-                  const { data, error } = await supabase
-                    .from("community_submissions")
-                    .select("id, contributor_name, work_title, category, x_url, created_at, upvote_count, downvote_count")
-                    .order("upvote_count", { ascending: false })
-                    .order("created_at", { ascending: false })
-                    .limit(60);
+                  const { data, error } = await fetchCommunity();
                   if (!error && data) setCommunity(data);
                 }}
                 onCommunitySubmitted={(entry) => setCommunity((current) => [entry, ...current.filter((item) => item.id !== entry.id)])}
@@ -404,7 +405,7 @@ function CommunityHighlights({ items, loadError, onRefresh }: { items: Community
               className="community-card"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.025, duration: 0.25 }}
+              transition={{ delay: Math.min(index, 8) * 0.025, duration: 0.25 }}
             >
               <div className="community-card-header">
                 <div className="community-author"><span className="community-category">{item.category}</span><strong>{item.contributor_name}</strong></div>
@@ -497,7 +498,7 @@ function ContributionForm({ onSubmitted }: { onSubmitted: (entry: CommunitySubmi
         category,
         x_url: parsedUrl.toString(),
       })
-      .select("id, contributor_name, work_title, category, x_url, created_at, upvote_count, downvote_count")
+      .select(SUBMISSION_COLUMNS)
       .single();
     setSubmitting(false);
     if (error || !data) {
@@ -548,11 +549,11 @@ function ContributionForm({ onSubmitted }: { onSubmitted: (entry: CommunitySubmi
   );
 }
 
-type GridItem = { title: string; detail: string; href: string; image?: string; logo?: string; icon?: typeof Globe2 };
+type GridItem = { title: string; detail: string; href: string; image?: string; logo?: string; icon?: typeof Globe2; badge?: string };
 
 function CardGrid({ items, kind }: { items: GridItem[]; kind: "links" | "people" | "articles" | "tools" }) {
   const reducedMotion = useReducedMotion();
-  return (
+  const grid = (
     <div className={`module-grid module-grid-${kind}`}>
       {items.map((item, index) => {
         const Icon = item.icon;
@@ -563,10 +564,11 @@ function CardGrid({ items, kind }: { items: GridItem[]; kind: "links" | "people"
             target="_blank"
             rel="noreferrer"
             className="tech-card"
-            initial={{ opacity: 0, y: reducedMotion ? 0 : 18 }}
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: reducedMotion ? 0 : index * 0.04, duration: reducedMotion ? 0 : 0.3 }}
+            transition={{ delay: reducedMotion ? 0 : Math.min(index, 6) * 0.04, duration: reducedMotion ? 0 : 0.3 }}
           >
+            {item.badge ? <span className="card-badge">{item.badge}</span> : null}
             {item.image ? <div className="card-image"><img src={item.image} alt={item.title} loading="lazy" /></div> : null}
             <div className="card-copy">
               <div className="card-icon">{item.logo ? <img src={item.logo} alt="" /> : Icon ? <Icon size={21} strokeWidth={1.65} /> : <span>0{index + 1}</span>}</div>
@@ -577,5 +579,14 @@ function CardGrid({ items, kind }: { items: GridItem[]; kind: "links" | "people"
         );
       })}
     </div>
+  );
+
+  if (kind !== "articles") return grid;
+
+  return (
+    <>
+      <p className="swipe-hint" aria-hidden="true">Swipe for more <ArrowRight size={13} /></p>
+      {grid}
+    </>
   );
 }
