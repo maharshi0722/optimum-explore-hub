@@ -459,7 +459,7 @@ function TwitterPost({ url }: { url: string }) {
   }, [url]);
 
   return <div className="community-embed" ref={embedRef}>
-    <blockquote className="twitter-tweet" data-dnt="true" data-theme="dark" data-align="center"><a href={url}>View this post on X</a></blockquote>
+    <blockquote className="twitter-tweet" data-dnt="true" data-theme="light" data-align="center"><a href={url}>View this post on X</a></blockquote>
   </div>;
 }
 
