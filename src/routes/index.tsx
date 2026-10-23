@@ -11,7 +11,6 @@ import {
   ChevronDown,
   ChevronUp,
   Code2,
-  ExternalLink,
   FileText,
   Globe2,
   Radio,
@@ -66,10 +65,12 @@ const modules = [
   { id: "explore", label: "Explore", note: "Go deeper" },
   { id: "community", label: "Community", note: "Featured work" },
   { id: "contribute", label: "Contribute", note: "Share your work" },
-  { id: "hub", label: "Optimum Hub", note: "Live app" },
 ] as const;
 
 type ModuleId = (typeof modules)[number]["id"];
+
+// 8th menu item: opens the live Optimum Hub in the same tab (no iframe).
+const HUB_URL = "https://hub.getoptimum.xyz/";
 
 const officialLinks = [
   { title: "Optimum website", detail: "The official home of the ecosystem.", href: "https://www.getoptimum.xyz/", logo: optimumLoopImage },
@@ -119,7 +120,6 @@ const moduleCopy: Record<ModuleId, { kicker: string; title: string; description:
   explore: { kicker: "Directory 05", title: "Go deeper into Optimum.", description: "Documentation, products and resources for builders and curious minds." },
   community: { kicker: "Community 06", title: "Built across the network.", description: "Discover community art, builds, technical work and videos shared by Optimum contributors." },
   contribute: { kicker: "Contribute 07", title: "Put your work in orbit.", description: "Share a public X post and tell the community what you have been making." },
-  hub: { kicker: "Hub 08", title: "The Optimum Hub, live.", description: "Explore the official Optimum Hub right here, or open it in its own tab." },
 };
 
 type CommunitySubmission = {
@@ -238,6 +238,12 @@ function OptimumHub() {
                 <span className="module-note">{module.note}</span>
               </button>
             ))}
+            <a href={HUB_URL} className="module-button module-link">
+              <span className="module-number" aria-hidden="true">0{modules.length + 1}</span>
+              <span className="module-name">Optimum Hub</span>
+              <span className="module-note">Opens the live app</span>
+              <ArrowUpRight className="module-link-arrow" size={15} aria-hidden="true" />
+            </a>
           </nav>
 
           <div className="rail-foot">
@@ -314,7 +320,6 @@ function ModuleContent({
   if (active === "explore") return <CardGrid items={explore} kind="tools" />;
   if (active === "community") return <CommunityHighlights items={community} loadError={communityLoadError} onRefresh={onCommunityRefresh} />;
   if (active === "contribute") return <ContributionForm onSubmitted={onCommunitySubmitted} />;
-  if (active === "hub") return <HubEmbed />;
   return <CardGrid items={officialLinks} kind="links" />;
 }
 
@@ -550,32 +555,6 @@ function ContributionForm({ onSubmitted }: { onSubmitted: (entry: CommunitySubmi
         </div>
       </form>
     </div>
-  );
-}
-
-const HUB_URL = "https://hub.getoptimum.xyz/";
-
-function HubEmbed() {
-  const [loaded, setLoaded] = useState(false);
-  return (
-    <section className="hub-embed" aria-label="Optimum Hub">
-      <div className="hub-embed-bar">
-        <span className="hub-embed-url">hub.getoptimum.xyz</span>
-        <a className="hub-embed-open" href={HUB_URL} target="_blank" rel="noreferrer">Open in new tab <ExternalLink size={14} /></a>
-      </div>
-      <div className="hub-embed-frame">
-        {!loaded ? <div className="hub-embed-loading" role="status">Loading Optimum Hub…</div> : null}
-        <iframe
-          src={HUB_URL}
-          title="Optimum Hub"
-          loading="lazy"
-          allow="clipboard-write; fullscreen"
-          referrerPolicy="strict-origin-when-cross-origin"
-          onLoad={() => setLoaded(true)}
-        />
-      </div>
-      <p className="hub-embed-note">If the page stays blank, the site may not allow embedding. Use “Open in new tab”.</p>
-    </section>
   );
 }
 
