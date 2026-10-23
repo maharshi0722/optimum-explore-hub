@@ -86,7 +86,7 @@ const team = [
 
 const reads: GridItem[] = [
   // TODO: replace this href with the exact post / article link for the mainnet announcement.
-  { title: "$3.4B Total Value Boosted", detail: "mump2p is live on Ethereum mainnet.", href: "https://x.com/get_optimum", image: mainnetImage, badge: "Live" },
+  { title: "$3.4B Total Value Boosted", detail: "mump2p is live on Ethereum mainnet.", href: "https://x.com/get_optimum/status/2112560918957543591", image: mainnetImage, badge: "Live" },
   { title: "Optimizing a $100B Market", detail: "Latency reduction and ETH staking revenue.", href: "https://x.com/get_optimum/status/2041916972678705375", image: aprImage },
   { title: "Flexnodes", detail: "A global network of data accelerators.", href: "https://x.com/get_optimum/status/2013656494139678752", image: flexnodesImage },
   { title: "Introducing OptimumP2P", detail: "Implementation and benefits.", href: "https://x.com/get_optimum/status/1930698870507626516", image: p2pImage },
@@ -202,7 +202,7 @@ function OptimumHub() {
   };
 
   return (
-    <main className="hub-shell">
+    <main className="hub-shell" data-module={active}>
       <div className="laboratory-background" aria-hidden="true">
         <img src={laboratoryAsset} alt="" fetchPriority="high" decoding="async" />
       </div>
