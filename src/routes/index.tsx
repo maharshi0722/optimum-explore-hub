@@ -89,7 +89,7 @@ const team = [
 
 const reads: GridItem[] = [
   // TODO: replace this href with the exact post / article link for the mainnet announcement.
-  { title: "$3.4B Total Value Boosted", detail: "mump2p is live on Ethereum mainnet.", href: "https://x.com/get_optimum", image: mainnetImage, badge: "Live" },
+  { title: "$3.4B Total Value Boosted", detail: "mump2p is live on Ethereum mainnet.", href: "https://x.com/get_optimum/status/2112560918957543591", image: mainnetImage, badge: "Live" },
   { title: "Optimizing a $100B Market", detail: "Latency reduction and ETH staking revenue.", href: "https://x.com/get_optimum/status/2041916972678705375", image: aprImage },
   { title: "Flexnodes", detail: "A global network of data accelerators.", href: "https://x.com/get_optimum/status/2013656494139678752", image: flexnodesImage },
   { title: "Introducing OptimumP2P", detail: "Implementation and benefits.", href: "https://x.com/get_optimum/status/1930698870507626516", image: p2pImage },
@@ -213,7 +213,7 @@ function OptimumHub() {
       <header className="mobile-topbar">
         <a href="https://www.getoptimum.xyz/" target="_blank" rel="noreferrer" className="optimum-mark" aria-label="Visit Optimum">
           <span className="optimum-symbol"><img src={optimumLoopImage} alt="" /></span>
-         <span className="optimum-wordmark"><strong>OPTIMUM</strong><em></em>
+          <span className="optimum-wordmark"><strong>OPTIMUM</strong><em>SPACE</em></span>
         </a>
         <span className="mobile-topbar-tagline">Scale any chain.</span>
       </header>
