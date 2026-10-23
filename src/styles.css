@@ -80,7 +80,6 @@
 .hub-shell[data-module="explore"]    { --hue: 200; }
 .hub-shell[data-module="community"]  { --hue: 340; }
 .hub-shell[data-module="contribute"] { --hue: 262; }
-.hub-shell[data-module="hub"]        { --hue: 125; }
 
 @layer base {
   * { border-color: var(--border); }
@@ -137,14 +136,17 @@
 .optimum-symbol img { width: 100%; height: 100%; object-fit: contain; }
 
 .module-nav { display: grid; gap: 4px; margin-top: clamp(30px, 7vh, 64px); }
-.module-button { position: relative; display: grid; grid-template-columns: 28px minmax(0,1fr); justify-content: start; gap: 0 10px; width: 100%; height: auto; min-height: 64px; padding: 12px 14px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: var(--muted-foreground); text-align: left; transition: color .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease; cursor: pointer; }
-.module-button::before { content: ""; position: absolute; left: 0; top: 18px; width: 3px; height: 28px; border-radius: 0 3px 3px 0; background: transparent; transition: background .25s ease; }
+.module-button { position: relative; display: grid; grid-template-columns: 28px minmax(0,1fr); justify-content: start; gap: 0 10px; width: 100%; height: auto; min-height: 60px; padding: 10px 14px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: var(--muted-foreground); text-align: left; transition: color .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease; cursor: pointer; }
+.module-button::before { content: ""; position: absolute; left: 0; top: 16px; width: 3px; height: 28px; border-radius: 0 3px 3px 0; background: transparent; transition: background .25s ease; }
 .module-button:hover { color: var(--foreground); background: var(--surface-hover); }
 .module-button.is-active { color: var(--foreground); background: var(--active-surface); border-color: var(--technical-line); }
 .module-button.is-active::before { background: var(--grad); }
 .module-number { grid-row: span 2; padding-top: 3px; color: var(--primary); font-size: 12px; font-weight: 700; }
 .module-name { min-width: 0; font-family: var(--font-display); font-size: 20px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; }
 .module-note { margin-top: 3px; font-size: 11px; color: var(--muted-foreground); }
+.module-link { text-decoration: none; }
+.module-link-arrow { position: absolute; top: 16px; right: 14px; color: var(--muted-foreground); transition: transform .2s ease, color .2s ease; }
+.module-link:hover .module-link-arrow { color: var(--primary); transform: translate(2px, -2px); }
 .rail-foot { margin-top: auto; display: grid; gap: 5px; padding-top: 22px; border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: 11px; text-transform: uppercase; }
 .rail-foot strong { color: var(--signal); font-family: var(--font-display); font-size: 14px; letter-spacing: 0.04em; }
 
@@ -278,18 +280,6 @@
 .form-message.is-success { color: var(--signal); }
 
 /* ------------------------------------------------------------------ */
-/* Optimum Hub (iframe)                                                */
-/* ------------------------------------------------------------------ */
-.hub-embed { display: grid; gap: 10px; min-width: 0; }
-.hub-embed-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 8px 8px 14px; border: 1px solid oklch(1 0 0 / 0.8); border-radius: 12px; background: var(--glass-solid); box-shadow: var(--shadow-soft), 0 0 0 1px var(--border); }
-.hub-embed-url { min-width: 0; overflow: hidden; color: var(--text-soft); font-family: var(--font-mono); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
-.hub-embed-open { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border-radius: 10px; background: var(--grad); color: var(--primary-foreground); font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; }
-.hub-embed-frame { position: relative; height: clamp(480px, 62vh, 760px); overflow: hidden; border: 1px solid oklch(1 0 0 / 0.8); border-radius: 14px; background: var(--glass-solid); box-shadow: var(--shadow-soft), 0 0 0 1px var(--border); }
-.hub-embed-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; }
-.hub-embed-loading { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; background: var(--glass-solid); color: var(--muted-foreground); font-family: var(--font-mono); font-size: 12px; pointer-events: none; }
-.hub-embed-note { margin: 0; color: var(--muted-foreground); font-size: 12px; }
-
-/* ------------------------------------------------------------------ */
 /* Focus + hidden-on-desktop                                           */
 /* ------------------------------------------------------------------ */
 .module-button:focus-visible, .stage-actions button:focus-visible, .tech-card:focus-visible, .community-open-post:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
@@ -357,11 +347,11 @@
     color: var(--foreground);
     touch-action: manipulation;
   }
-  .hub-embed-frame { height: 72svh; min-height: 420px; }
   .module-button::before, .module-note { display: none; }
   .module-number { grid-row: auto; flex-shrink: 0; padding: 0; font-size: 12px; }
   .module-number::after { content: " —"; color: var(--muted-foreground); }
   .module-name { overflow: hidden; font-size: 14px; letter-spacing: 0.04em; line-height: 1; text-overflow: ellipsis; white-space: nowrap; }
+  .module-link-arrow { position: static; flex-shrink: 0; margin-left: auto; }
   .module-button:active { transform: scale(0.97); background: var(--active-surface); }
   .module-button.is-active { border-color: var(--primary); background: var(--active-surface); box-shadow: 0 0 0 1px var(--primary) inset; }
   .module-button.is-active .module-number { color: var(--primary); }
